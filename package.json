@@ -1,0 +1,17 @@
+{
+  "name": "reddit-email-workflow",
+  "version": "1.0.0",
+  "description": "Daily Reddit digest sent via email using Trigger.dev v4 and Resend",
+  "private": true,
+  "scripts": {
+    "dev": "npx trigger.dev@4 dev",
+    "deploy": "npx trigger.dev@4 deploy"
+  },
+  "dependencies": {
+    "@trigger.dev/sdk": "^4.0.0",
+    "resend": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
