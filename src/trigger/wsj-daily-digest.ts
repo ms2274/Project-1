@@ -1,6 +1,5 @@
 import { schedules } from "@trigger.dev/sdk/v3";
 import { Resend } from "resend";
-import { XMLParser } from "fast-xml-parser";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -98,30 +97,43 @@ function formatPubDate(pubDate: string): string {
 }
 
 async function fetchTopArticle(feedUrl: string): Promise<Article | null> {
+  // Route through rss2json.com — a free RSS proxy that can reach WSJ feeds
+  // from their own servers, bypassing IP-level blocks on direct cloud access.
+  const proxyUrl =
+    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+
   try {
-    const response = await fetch(feedUrl, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; WSJ-Digest/1.0)" },
+    const response = await fetch(proxyUrl, {
       signal: AbortSignal.timeout(15_000),
     });
 
     if (!response.ok) {
-      console.error(`Feed fetch failed: ${feedUrl} → HTTP ${response.status}`);
+      console.error(`RSS proxy failed for ${feedUrl}: HTTP ${response.status}`);
       return null;
     }
 
-    const xml = await response.text();
-    const parser = new XMLParser({ ignoreAttributes: false });
-    const parsed = parser.parse(xml);
+    const data = await response.json() as {
+      status: string;
+      items?: Array<{
+        title?: string;
+        link?: string;
+        description?: string;
+        author?: string;
+        pubDate?: string;
+      }>;
+    };
 
-    const items = parsed?.rss?.channel?.item;
-    const item = Array.isArray(items) ? items[0] : items;
-    if (!item) return null;
+    if (data.status !== "ok" || !data.items?.length) {
+      console.error(`No items returned for ${feedUrl} (status: ${data.status})`);
+      return null;
+    }
 
-    const title = stripHtml(String(item.title ?? ""));
-    const link = String(item.link ?? "").trim();
-    let description = stripHtml(String(item.description ?? ""));
-    const author = String(item["dc:creator"] ?? "").trim();
-    const pubDate = String(item.pubDate ?? "").trim();
+    const item = data.items[0];
+    const title = stripHtml(item.title ?? "");
+    const link = (item.link ?? "").trim();
+    let description = stripHtml(item.description ?? "");
+    const author = (item.author ?? "").trim();
+    const pubDate = (item.pubDate ?? "").trim();
 
     if (!title || !link) return null;
     if (description.length > 380) {
@@ -130,7 +142,7 @@ async function fetchTopArticle(feedUrl: string): Promise<Article | null> {
 
     return { title, link, description, author, pubDate };
   } catch (err) {
-    console.error(`Failed to fetch or parse feed ${feedUrl}:`, err);
+    console.error(`Failed to fetch feed ${feedUrl}:`, err);
     return null;
   }
 }
