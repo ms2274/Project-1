@@ -1,5 +1,6 @@
 import { schedules } from "@trigger.dev/sdk/v3";
 import { Resend } from "resend";
+import { XMLParser } from "fast-xml-parser";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -25,8 +26,7 @@ interface Category {
 }
 
 // ---------------------------------------------------------------------------
-// Feed configuration
-// RSS feed URLs are overridable via environment variables in case WSJ changes them
+// Google News RSS — searches within wsj.com, works from any IP, no key needed
 // ---------------------------------------------------------------------------
 
 const CATEGORIES: Category[] = [
@@ -35,8 +35,7 @@ const CATEGORIES: Category[] = [
     label: "Macroeconomics",
     badge: "ECONOMY",
     feedUrl:
-      process.env.WSJ_MACRO_FEED ??
-      "https://feeds.content.dowjones.io/public/rss/WSJ_Economy",
+      'https://news.google.com/rss/search?q=site:wsj.com+economy+OR+inflation+OR+"federal+reserve"+OR+GDP&hl=en-US&gl=US&ceid=US:en',
     accent: "#1e3a5f",
     textColor: "#1e40af",
   },
@@ -45,8 +44,7 @@ const CATEGORIES: Category[] = [
     label: "Industry / Company",
     badge: "BUSINESS",
     feedUrl:
-      process.env.WSJ_BUSINESS_FEED ??
-      "https://feeds.content.dowjones.io/public/rss/WSJ_US_Business",
+      "https://news.google.com/rss/search?q=site:wsj.com+company+OR+earnings+OR+merger+OR+acquisition&hl=en-US&gl=US&ceid=US:en",
     accent: "#14532d",
     textColor: "#166534",
   },
@@ -55,8 +53,7 @@ const CATEGORIES: Category[] = [
     label: "Opinion",
     badge: "OP-ED",
     feedUrl:
-      process.env.WSJ_OPINION_FEED ??
-      "https://feeds.content.dowjones.io/public/rss/WSJopinion",
+      "https://news.google.com/rss/search?q=site:wsj.com+opinion&hl=en-US&gl=US&ceid=US:en",
     accent: "#7c2d12",
     textColor: "#991b1b",
   },
@@ -97,50 +94,42 @@ function formatPubDate(pubDate: string): string {
 }
 
 async function fetchTopArticle(feedUrl: string): Promise<Article | null> {
-  // Route through rss2json.com — a free RSS proxy that can reach WSJ feeds
-  // from their own servers, bypassing IP-level blocks on direct cloud access.
-  const proxyUrl =
-    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
-
   try {
-    const response = await fetch(proxyUrl, {
+    const response = await fetch(feedUrl, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+      },
       signal: AbortSignal.timeout(15_000),
     });
 
     if (!response.ok) {
-      console.error(`RSS proxy failed for ${feedUrl}: HTTP ${response.status}`);
+      console.error(`Feed failed: ${feedUrl} → HTTP ${response.status}`);
       return null;
     }
 
-    const data = await response.json() as {
-      status: string;
-      items?: Array<{
-        title?: string;
-        link?: string;
-        description?: string;
-        author?: string;
-        pubDate?: string;
-      }>;
-    };
+    const xml = await response.text();
+    const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
+    const parsed = parser.parse(xml);
 
-    if (data.status !== "ok" || !data.items?.length) {
-      console.error(`No items returned for ${feedUrl} (status: ${data.status})`);
-      return null;
-    }
+    const items = parsed?.rss?.channel?.item;
+    const item = Array.isArray(items) ? items[0] : items;
+    if (!item) return null;
 
-    const item = data.items[0];
-    const title = stripHtml(item.title ?? "");
-    const link = (item.link ?? "").trim();
-    let description = stripHtml(item.description ?? "");
-    const author = (item.author ?? "").trim();
-    const pubDate = (item.pubDate ?? "").trim();
+    // Google News appends " - Wall Street Journal" to titles — strip it
+    let title = stripHtml(String(item.title ?? ""));
+    title = title.replace(/\s*-\s*Wall Street Journal\s*$/i, "").trim();
+
+    const link = String(item.link ?? "").trim();
+    let description = stripHtml(String(item.description ?? ""));
+    const pubDate = String(item.pubDate ?? "").trim();
 
     if (!title || !link) return null;
     if (description.length > 380) {
       description = description.slice(0, 377).trimEnd() + "...";
     }
 
-    return { title, link, description, author, pubDate };
+    return { title, link, description, author: "Wall Street Journal", pubDate };
   } catch (err) {
     console.error(`Failed to fetch feed ${feedUrl}:`, err);
     return null;
@@ -209,9 +198,7 @@ function buildHtml(results: Array<[Category, Article | null]>): string {
     timeZone: "America/New_York",
   });
 
-  const cards = results
-    .map(([cat, art]) => buildArticleCard(cat, art))
-    .join("\n");
+  const cards = results.map(([cat, art]) => buildArticleCard(cat, art)).join("\n");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -225,7 +212,6 @@ function buildHtml(results: Array<[Category, Article | null]>): string {
   <div style="max-width:640px;margin:28px auto;background:#fff;border-radius:16px;
               overflow:hidden;box-shadow:0 4px 28px rgba(0,0,0,0.09);">
 
-    <!-- Header -->
     <div style="background:#0a1628;padding:30px 28px 26px;">
       <div style="font-size:1.35em;font-weight:800;color:#fff;letter-spacing:-0.01em;
                   font-family:Georgia,serif;">The Wall Street Journal</div>
@@ -238,16 +224,14 @@ function buildHtml(results: Array<[Category, Article | null]>): string {
       </div>
     </div>
 
-    <!-- Article cards -->
     <div style="padding:26px 22px 10px;">
       ${cards}
     </div>
 
-    <!-- Footer -->
     <div style="background:#f8fafc;padding:16px 28px;text-align:center;
                 font-size:0.73em;color:#94a3b8;border-top:1px solid #e2e8f0;">
-      Articles sourced via
-      <a href="https://www.wsj.com/news/rss-news-and-feeds" style="color:#64748b;">WSJ RSS feeds</a>.
+      Articles sourced from
+      <a href="https://www.wsj.com" style="color:#64748b;">The Wall Street Journal</a>.
       Full text requires your WSJ subscription.
     </div>
 
@@ -280,7 +264,7 @@ export const wsjDailyDigest = schedules.task({
     }
 
     if (results.every(([, art]) => art === null)) {
-      throw new Error("All RSS feeds failed — aborting, no email sent");
+      throw new Error("All feeds failed — aborting, no email sent");
     }
 
     const html = buildHtml(results);
