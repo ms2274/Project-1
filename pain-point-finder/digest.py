@@ -1,10 +1,9 @@
-"""Build and send the weekly "top new pain points" digest email via Resend."""
-import os
+"""Build the "top new pain points" digest as HTML.
 
-import resend
-from requests.exceptions import RequestException
-
-from common import retry, setup_logging
+No email delivery — this just renders the ranked list. Preview it in the
+terminal (default) or save it to a local HTML file with --output.
+"""
+from common import setup_logging
 from storage.supabase_client import get_client, get_top_pain_points
 
 logger = setup_logging(__name__)
@@ -50,19 +49,6 @@ def _render_html(pain_points: list[dict]) -> str:
     """
 
 
-@retry(attempts=3, base_delay=2.0, exceptions=(RequestException,))
-def _send_email(html: str) -> dict:
-    resend.api_key = os.environ.get("RESEND_API_KEY")
-    from_email = os.environ.get("DIGEST_FROM_EMAIL")
-    to_email = os.environ.get("DIGEST_TO_EMAIL")
-    return resend.Emails.send({
-        "from": from_email,
-        "to": [to_email],
-        "subject": "Pain Point Finder — Weekly Digest",
-        "html": html,
-    })
-
-
 def build_digest(limit: int = 10, days: int = 7) -> tuple[list[dict], str]:
     supabase = get_client()
     pain_points = get_top_pain_points(supabase, days=days, limit=limit, confirmed_only=True)
@@ -70,14 +56,14 @@ def build_digest(limit: int = 10, days: int = 7) -> tuple[list[dict], str]:
     return pain_points, html
 
 
-def send_digest(limit: int = 10, days: int = 7) -> None:
+def write_digest_file(output_path: str, limit: int = 10, days: int = 7) -> int:
+    """Build the digest and save it as a local HTML file. Returns the pain point count."""
     pain_points, html = build_digest(limit=limit, days=days)
-    if not pain_points:
-        logger.info("No confirmed pain points to send — skipping digest send.")
-        return
-    result = _send_email(html)
-    logger.info("Sent digest with %d pain points (resend id=%s)", len(pain_points), result.get("id"))
+    with open(output_path, "w") as f:
+        f.write(html)
+    logger.info("Wrote digest (%d pain points) to %s", len(pain_points), output_path)
+    return len(pain_points)
 
 
 if __name__ == "__main__":
-    send_digest()
+    write_digest_file("digest_output.html")

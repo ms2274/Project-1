@@ -2,7 +2,7 @@
 
 Scrapes places people complain in public, uses Claude to classify each snippet
 as a genuine monetizable pain point, clusters similar complaints into themes,
-scores/ranks them, and emails a weekly digest of the best opportunities.
+scores/ranks them, and builds a digest of the best opportunities.
 
 ```
 INGEST  -->  FILTER  -->  CLASSIFY (Claude)  -->  CLUSTER  -->  SCORE/RANK  -->  DIGEST
@@ -48,7 +48,6 @@ Fill in:
 - `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT` — from step 2
 - `X_BEARER_TOKEN` — optional, phase 2 (X API recent-search requires a paid tier)
 - `SUPABASE_URL`, `SUPABASE_KEY` — from your Supabase project settings
-- `RESEND_API_KEY`, `DIGEST_FROM_EMAIL`, `DIGEST_TO_EMAIL` — for the weekly digest
 
 Sources with missing credentials fail with a clear error rather than crashing
 the whole run — e.g. skip `X_BEARER_TOKEN` entirely until you're ready for the
@@ -72,19 +71,19 @@ python main.py classify
 # Group classified pain points into themed clusters
 python main.py cluster
 
-# Preview the digest without sending
+# Preview the digest in the terminal
 python main.py digest
 
-# Send the digest email via Resend
-python main.py digest --send
+# Save the digest as a local HTML file instead
+python main.py digest --output digest_output.html
 
 # Full pipeline in one shot: ingest -> classify -> cluster (-> digest)
-python main.py run --source reddit --keywords "gym scheduling software" --subreddits Fitness --limit 20 --send-digest
+python main.py run --source reddit --keywords "gym scheduling software" --subreddits Fitness --limit 20 --write-digest digest_output.html
 ```
 
 ## Notes
 
-- All external API calls (Reddit, Google Play, X, Anthropic, Supabase, Resend)
+- All external API calls (Reddit, Google Play, X, Anthropic, Supabase)
   retry up to 3 times with exponential backoff on transient failures.
 - Snippets are deduplicated on `(source, external_id)` before insert — safe to
   re-run ingestion for the same keywords repeatedly.
@@ -95,5 +94,5 @@ python main.py run --source reddit --keywords "gym scheduling software" --subred
   `distinct_sources_last_7d >= 10` — anything below that threshold is real
   data but won't show up in the digest yet. One loud complainer isn't a market.
 - Everything logs to stdout with timestamps, so it wires straight into
-  Trigger.dev as scheduled jobs (daily ingest, weekly digest) the same way
-  your existing scripts do.
+  Trigger.dev as a scheduled job (e.g. daily ingest + classify + cluster) the
+  same way your existing scripts do.

@@ -6,7 +6,7 @@ Examples:
     python main.py ingest --source twitter --keywords "wish there was an app,gym scheduling"
     python main.py classify --unprocessed-only
     python main.py cluster
-    python main.py digest --send
+    python main.py digest --output digest_output.html
     python main.py run --source reddit --keywords "gym scheduling" --subreddits Fitness --limit 20
 """
 import click
@@ -16,7 +16,7 @@ load_dotenv()
 
 from cluster import cluster_pain_points
 from common import NotConfiguredError, setup_logging
-from digest import build_digest, send_digest as send_digest_email
+from digest import build_digest, write_digest_file
 from storage.supabase_client import get_client, insert_raw_snippets
 
 logger = setup_logging(__name__)
@@ -99,13 +99,13 @@ def cluster(limit):
 
 
 @cli.command()
-@click.option("--send", is_flag=True, default=False, help="Actually send the email via Resend (otherwise just prints a preview).")
+@click.option("--output", default=None, help="Save the digest as an HTML file at this path (otherwise just prints a preview).")
 @click.option("--limit", default=10, help="Max pain points to include.")
 @click.option("--days", default=7, help="Lookback window in days.")
-def digest(send, limit, days):
-    """Build the weekly top-pain-points digest, optionally sending it via Resend."""
-    if send:
-        send_digest_email(limit=limit, days=days)
+def digest(output, limit, days):
+    """Build the weekly top-pain-points digest, printing a preview or saving it as HTML."""
+    if output:
+        write_digest_file(output, limit=limit, days=days)
     else:
         pain_points, html = build_digest(limit=limit, days=days)
         logger.info("Digest preview (%d pain points):", len(pain_points))
@@ -119,8 +119,8 @@ def digest(send, limit, days):
 @click.option("--subreddits", default=None, help="Comma-separated subreddit names (reddit only).")
 @click.option("--app", default=None, help="Play Store package name or search term (google_play only).")
 @click.option("--limit", default=100, help="Max items to pull per keyword/source.")
-@click.option("--send-digest", "should_send_digest", is_flag=True, default=False, help="Also send the digest email at the end.")
-def run(source, keywords, subreddits, app, limit, should_send_digest):
+@click.option("--write-digest", "digest_output", default=None, help="Also save the digest as an HTML file at this path.")
+def run(source, keywords, subreddits, app, limit, digest_output):
     """Run the full pipeline end to end: ingest -> classify -> cluster (-> digest)."""
     stored = _run_ingest(source, keywords, subreddits, app, limit)
     logger.info("Ingest stage stored %d new snippets", stored)
@@ -132,9 +132,8 @@ def run(source, keywords, subreddits, app, limit, should_send_digest):
     clustered = cluster_pain_points()
     logger.info("Cluster stage assigned %d pain points", clustered)
 
-    if should_send_digest:
-        send_digest_email()
-        logger.info("Digest sent")
+    if digest_output:
+        write_digest_file(digest_output)
 
 
 if __name__ == "__main__":
