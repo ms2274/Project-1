@@ -1,0 +1,1503 @@
+[
+  {
+    "id": "v1",
+    "name": "Corner Espresso Bar",
+    "category": "coffee",
+    "neighborhood": "East Village",
+    "lat": 40.730154,
+    "lng": -73.985958,
+    "priceLevel": 1,
+    "rating": 4.7,
+    "vibeTags": [
+      "casual",
+      "foodie"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "321 Mulberry St, East Village, NY"
+  },
+  {
+    "id": "v2",
+    "name": "The Kitchen",
+    "category": "lunch",
+    "neighborhood": "East Village",
+    "lat": 40.724647,
+    "lng": -73.97857,
+    "priceLevel": 2,
+    "rating": 4,
+    "vibeTags": [
+      "chill",
+      "foodie"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "281 Mulberry St, East Village, NY"
+  },
+  {
+    "id": "v3",
+    "name": "Osteria Pot",
+    "category": "dinner",
+    "neighborhood": "East Village",
+    "lat": 40.724504,
+    "lng": -73.980165,
+    "priceLevel": 2,
+    "rating": 4.7,
+    "vibeTags": [
+      "romantic",
+      "foodie",
+      "casual"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "423 Court St, East Village, NY"
+  },
+  {
+    "id": "v4",
+    "name": "Casa Vine",
+    "category": "dinner",
+    "neighborhood": "East Village",
+    "lat": 40.72989,
+    "lng": -73.983413,
+    "priceLevel": 3,
+    "rating": 4.1,
+    "vibeTags": [
+      "foodie",
+      "romantic",
+      "chill"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "484 Bleecker St, East Village, NY"
+  },
+  {
+    "id": "v5",
+    "name": "The Hidden Room & Co.",
+    "category": "drinks",
+    "neighborhood": "East Village",
+    "lat": 40.723296,
+    "lng": -73.984592,
+    "priceLevel": 2,
+    "rating": 4.4,
+    "vibeTags": [
+      "romantic",
+      "casual",
+      "artsy"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "455 Bleecker St, East Village, NY"
+  },
+  {
+    "id": "v6",
+    "name": "The Velvet Owl",
+    "category": "drinks",
+    "neighborhood": "East Village",
+    "lat": 40.731214,
+    "lng": -73.985804,
+    "priceLevel": 4,
+    "rating": 4.3,
+    "vibeTags": [
+      "adventurous",
+      "romantic"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "190 Bedford Ave, East Village, NY"
+  },
+  {
+    "id": "v7",
+    "name": "The Gallery",
+    "category": "activity",
+    "neighborhood": "East Village",
+    "lat": 40.726908,
+    "lng": -73.976592,
+    "priceLevel": 3,
+    "rating": 3.9,
+    "vibeTags": [
+      "adventurous",
+      "artsy"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "348 1st Ave, East Village, NY"
+  },
+  {
+    "id": "v8",
+    "name": "Neighborhood Art Studio",
+    "category": "activity",
+    "neighborhood": "East Village",
+    "lat": 40.723502,
+    "lng": -73.97857,
+    "priceLevel": 3,
+    "rating": 4.6,
+    "vibeTags": [
+      "artsy"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "113 Bedford Ave, East Village, NY"
+  },
+  {
+    "id": "v9",
+    "name": "Moonlight Creamery",
+    "category": "dessert",
+    "neighborhood": "East Village",
+    "lat": 40.728289,
+    "lng": -73.982012,
+    "priceLevel": 2,
+    "rating": 4.3,
+    "vibeTags": [
+      "romantic",
+      "foodie"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "281 Bleecker St, East Village, NY"
+  },
+  {
+    "id": "v10",
+    "name": "Corner Espresso Bar",
+    "category": "coffee",
+    "neighborhood": "West Village",
+    "lat": 40.738438,
+    "lng": -73.999419,
+    "priceLevel": 3,
+    "rating": 4,
+    "vibeTags": [
+      "casual",
+      "artsy",
+      "adventurous"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "104 Grand St, West Village, NY"
+  },
+  {
+    "id": "v11",
+    "name": "Daily Brew House",
+    "category": "coffee",
+    "neighborhood": "West Village",
+    "lat": 40.739359,
+    "lng": -74.008345,
+    "priceLevel": 1,
+    "rating": 4.6,
+    "vibeTags": [
+      "chill",
+      "adventurous"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "441 Bedford Ave, West Village, NY"
+  },
+  {
+    "id": "v12",
+    "name": "Green Deli",
+    "category": "lunch",
+    "neighborhood": "West Village",
+    "lat": 40.736202,
+    "lng": -74.004732,
+    "priceLevel": 2,
+    "rating": 4.8,
+    "vibeTags": [
+      "foodie",
+      "casual",
+      "artsy"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "270 Mulberry St, West Village, NY"
+  },
+  {
+    "id": "v13",
+    "name": "Casa Otto",
+    "category": "dinner",
+    "neighborhood": "West Village",
+    "lat": 40.73352,
+    "lng": -73.998994,
+    "priceLevel": 4,
+    "rating": 4.1,
+    "vibeTags": [
+      "romantic",
+      "foodie"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "433 Grand St, West Village, NY"
+  },
+  {
+    "id": "v14",
+    "name": "Night Flask",
+    "category": "drinks",
+    "neighborhood": "West Village",
+    "lat": 40.732042,
+    "lng": -73.999354,
+    "priceLevel": 1,
+    "rating": 4.5,
+    "vibeTags": [
+      "casual",
+      "adventurous",
+      "artsy"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "152 Bleecker St, West Village, NY"
+  },
+  {
+    "id": "v15",
+    "name": "Amber Owl",
+    "category": "drinks",
+    "neighborhood": "West Village",
+    "lat": 40.730561,
+    "lng": -74.005955,
+    "priceLevel": 2,
+    "rating": 3.8,
+    "vibeTags": [
+      "romantic",
+      "casual"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "123 Bedford Ave, West Village, NY"
+  },
+  {
+    "id": "v16",
+    "name": "Downtown Bowling Lounge",
+    "category": "activity",
+    "neighborhood": "West Village",
+    "lat": 40.737537,
+    "lng": -73.997215,
+    "priceLevel": 2,
+    "rating": 4,
+    "vibeTags": [
+      "chill",
+      "casual",
+      "romantic"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "104 Mulberry St, West Village, NY"
+  },
+  {
+    "id": "v17",
+    "name": "Cloud Nine Creamery",
+    "category": "dessert",
+    "neighborhood": "West Village",
+    "lat": 40.729667,
+    "lng": -74.008363,
+    "priceLevel": 3,
+    "rating": 3.9,
+    "vibeTags": [
+      "chill"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "439 Bleecker St, West Village, NY"
+  },
+  {
+    "id": "v18",
+    "name": "Corner Espresso Bar",
+    "category": "coffee",
+    "neighborhood": "SoHo",
+    "lat": 40.722484,
+    "lng": -74.004272,
+    "priceLevel": 2,
+    "rating": 3.8,
+    "vibeTags": [
+      "chill",
+      "artsy"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "255 Grand St, SoHo, NY"
+  },
+  {
+    "id": "v19",
+    "name": "Little Deli",
+    "category": "lunch",
+    "neighborhood": "SoHo",
+    "lat": 40.723799,
+    "lng": -74.001046,
+    "priceLevel": 2,
+    "rating": 3.9,
+    "vibeTags": [
+      "casual",
+      "foodie",
+      "chill"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "274 Bedford Ave, SoHo, NY"
+  },
+  {
+    "id": "v20",
+    "name": "The Kitchen",
+    "category": "lunch",
+    "neighborhood": "SoHo",
+    "lat": 40.720574,
+    "lng": -74.008831,
+    "priceLevel": 2,
+    "rating": 4.4,
+    "vibeTags": [
+      "foodie",
+      "chill"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "189 Bedford Ave, SoHo, NY"
+  },
+  {
+    "id": "v21",
+    "name": "Casa Fern",
+    "category": "dinner",
+    "neighborhood": "SoHo",
+    "lat": 40.723405,
+    "lng": -74.001869,
+    "priceLevel": 1,
+    "rating": 4.2,
+    "vibeTags": [
+      "adventurous",
+      "romantic",
+      "chill"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "200 Grand St, SoHo, NY"
+  },
+  {
+    "id": "v22",
+    "name": "Amber Room",
+    "category": "drinks",
+    "neighborhood": "SoHo",
+    "lat": 40.7276,
+    "lng": -74.005695,
+    "priceLevel": 3,
+    "rating": 3.9,
+    "vibeTags": [
+      "romantic",
+      "chill"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "172 5th Ave, SoHo, NY"
+  },
+  {
+    "id": "v23",
+    "name": "The Hidden Room & Co.",
+    "category": "drinks",
+    "neighborhood": "SoHo",
+    "lat": 40.720331,
+    "lng": -74.005014,
+    "priceLevel": 1,
+    "rating": 4.6,
+    "vibeTags": [
+      "romantic",
+      "adventurous"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "477 Mulberry St, SoHo, NY"
+  },
+  {
+    "id": "v24",
+    "name": "Uptown Escape Room",
+    "category": "activity",
+    "neighborhood": "SoHo",
+    "lat": 40.723241,
+    "lng": -73.99798,
+    "priceLevel": 2,
+    "rating": 4.1,
+    "vibeTags": [
+      "chill",
+      "adventurous",
+      "foodie"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "275 Court St, SoHo, NY"
+  },
+  {
+    "id": "v25",
+    "name": "Sweet Patisserie",
+    "category": "dessert",
+    "neighborhood": "SoHo",
+    "lat": 40.729258,
+    "lng": -74.004422,
+    "priceLevel": 4,
+    "rating": 4.8,
+    "vibeTags": [
+      "romantic",
+      "chill",
+      "adventurous"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "258 Bedford Ave, SoHo, NY"
+  },
+  {
+    "id": "v26",
+    "name": "Sunday Coffee Co.",
+    "category": "coffee",
+    "neighborhood": "Lower East Side",
+    "lat": 40.71056,
+    "lng": -73.981307,
+    "priceLevel": 3,
+    "rating": 3.8,
+    "vibeTags": [
+      "artsy",
+      "romantic"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "463 Bleecker St, Lower East Side, NY"
+  },
+  {
+    "id": "v27",
+    "name": "Golden Bistro",
+    "category": "lunch",
+    "neighborhood": "Lower East Side",
+    "lat": 40.713215,
+    "lng": -73.987513,
+    "priceLevel": 3,
+    "rating": 4.8,
+    "vibeTags": [
+      "foodie",
+      "chill"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "170 Bedford Ave, Lower East Side, NY"
+  },
+  {
+    "id": "v28",
+    "name": "Lantern & Vine",
+    "category": "dinner",
+    "neighborhood": "Lower East Side",
+    "lat": 40.715864,
+    "lng": -73.984747,
+    "priceLevel": 2,
+    "rating": 3.9,
+    "vibeTags": [
+      "foodie",
+      "adventurous",
+      "casual"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "270 Bleecker St, Lower East Side, NY"
+  },
+  {
+    "id": "v29",
+    "name": "The Rustic Vine",
+    "category": "dinner",
+    "neighborhood": "Lower East Side",
+    "lat": 40.718696,
+    "lng": -73.978708,
+    "priceLevel": 1,
+    "rating": 4.5,
+    "vibeTags": [
+      "foodie",
+      "adventurous"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "354 Mulberry St, Lower East Side, NY"
+  },
+  {
+    "id": "v30",
+    "name": "The Hidden Room",
+    "category": "drinks",
+    "neighborhood": "Lower East Side",
+    "lat": 40.71231,
+    "lng": -73.983697,
+    "priceLevel": 1,
+    "rating": 4.8,
+    "vibeTags": [
+      "romantic",
+      "adventurous",
+      "chill"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "402 Bedford Ave, Lower East Side, NY"
+  },
+  {
+    "id": "v31",
+    "name": "The Hidden Room & Co.",
+    "category": "drinks",
+    "neighborhood": "Lower East Side",
+    "lat": 40.71755,
+    "lng": -73.988765,
+    "priceLevel": 4,
+    "rating": 3.9,
+    "vibeTags": [
+      "casual",
+      "artsy"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "424 Bedford Ave, Lower East Side, NY"
+  },
+  {
+    "id": "v32",
+    "name": "Riverside Rooftop Garden",
+    "category": "activity",
+    "neighborhood": "Lower East Side",
+    "lat": 40.715442,
+    "lng": -73.980433,
+    "priceLevel": 1,
+    "rating": 4.7,
+    "vibeTags": [
+      "adventurous",
+      "artsy",
+      "foodie"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "131 Bedford Ave, Lower East Side, NY"
+  },
+  {
+    "id": "v33",
+    "name": "The Art Studio",
+    "category": "activity",
+    "neighborhood": "Lower East Side",
+    "lat": 40.713205,
+    "lng": -73.978325,
+    "priceLevel": 3,
+    "rating": 3.9,
+    "vibeTags": [
+      "casual",
+      "chill"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "461 Grand St, Lower East Side, NY"
+  },
+  {
+    "id": "v34",
+    "name": "Sugar & Gelato Bar",
+    "category": "dessert",
+    "neighborhood": "Lower East Side",
+    "lat": 40.715192,
+    "lng": -73.986303,
+    "priceLevel": 3,
+    "rating": 3.7,
+    "vibeTags": [
+      "romantic",
+      "casual"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "468 1st Ave, Lower East Side, NY"
+  },
+  {
+    "id": "v35",
+    "name": "Sweet Gelato Bar",
+    "category": "dessert",
+    "neighborhood": "Lower East Side",
+    "lat": 40.712559,
+    "lng": -73.985856,
+    "priceLevel": 4,
+    "rating": 4.1,
+    "vibeTags": [
+      "casual",
+      "chill",
+      "romantic"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "397 1st Ave, Lower East Side, NY"
+  },
+  {
+    "id": "v36",
+    "name": "Roast & Espresso Bar",
+    "category": "coffee",
+    "neighborhood": "Chelsea",
+    "lat": 40.752027,
+    "lng": -74.006181,
+    "priceLevel": 3,
+    "rating": 4.6,
+    "vibeTags": [
+      "casual",
+      "chill",
+      "adventurous"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "348 Bedford Ave, Chelsea, NY"
+  },
+  {
+    "id": "v37",
+    "name": "Golden Deli",
+    "category": "lunch",
+    "neighborhood": "Chelsea",
+    "lat": 40.746902,
+    "lng": -74.002451,
+    "priceLevel": 1,
+    "rating": 4.3,
+    "vibeTags": [
+      "foodie",
+      "casual"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "344 Bleecker St, Chelsea, NY"
+  },
+  {
+    "id": "v38",
+    "name": "The Copper Pot",
+    "category": "dinner",
+    "neighborhood": "Chelsea",
+    "lat": 40.751878,
+    "lng": -74.003057,
+    "priceLevel": 4,
+    "rating": 4.7,
+    "vibeTags": [
+      "foodie",
+      "artsy"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "458 5th Ave, Chelsea, NY"
+  },
+  {
+    "id": "v39",
+    "name": "Osteria Fern",
+    "category": "dinner",
+    "neighborhood": "Chelsea",
+    "lat": 40.75178,
+    "lng": -73.999365,
+    "priceLevel": 2,
+    "rating": 4.5,
+    "vibeTags": [
+      "romantic",
+      "adventurous",
+      "foodie"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "397 Mulberry St, Chelsea, NY"
+  },
+  {
+    "id": "v40",
+    "name": "The Hidden Owl",
+    "category": "drinks",
+    "neighborhood": "Chelsea",
+    "lat": 40.741575,
+    "lng": -74.006975,
+    "priceLevel": 3,
+    "rating": 4.8,
+    "vibeTags": [
+      "romantic",
+      "casual",
+      "adventurous"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "195 1st Ave, Chelsea, NY"
+  },
+  {
+    "id": "v41",
+    "name": "The Bowling Lounge",
+    "category": "activity",
+    "neighborhood": "Chelsea",
+    "lat": 40.742553,
+    "lng": -74.003834,
+    "priceLevel": 2,
+    "rating": 4.7,
+    "vibeTags": [
+      "chill",
+      "foodie"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "492 Bleecker St, Chelsea, NY"
+  },
+  {
+    "id": "v42",
+    "name": "Sugar & Patisserie",
+    "category": "dessert",
+    "neighborhood": "Chelsea",
+    "lat": 40.751084,
+    "lng": -73.998494,
+    "priceLevel": 4,
+    "rating": 4.3,
+    "vibeTags": [
+      "romantic",
+      "chill"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "383 Court St, Chelsea, NY"
+  },
+  {
+    "id": "v43",
+    "name": "The Little Patisserie",
+    "category": "dessert",
+    "neighborhood": "Chelsea",
+    "lat": 40.742023,
+    "lng": -73.996816,
+    "priceLevel": 3,
+    "rating": 4.3,
+    "vibeTags": [
+      "romantic",
+      "chill"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "129 Bedford Ave, Chelsea, NY"
+  },
+  {
+    "id": "v44",
+    "name": "Velvet Coffee Co.",
+    "category": "coffee",
+    "neighborhood": "Williamsburg",
+    "lat": 40.703703,
+    "lng": -73.963024,
+    "priceLevel": 4,
+    "rating": 4.2,
+    "vibeTags": [
+      "artsy",
+      "chill"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "474 Bedford Ave, Williamsburg, NY"
+  },
+  {
+    "id": "v45",
+    "name": "Green Bistro",
+    "category": "lunch",
+    "neighborhood": "Williamsburg",
+    "lat": 40.707728,
+    "lng": -73.959529,
+    "priceLevel": 2,
+    "rating": 4.3,
+    "vibeTags": [
+      "foodie",
+      "artsy"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "140 Grand St, Williamsburg, NY"
+  },
+  {
+    "id": "v46",
+    "name": "Bar Table",
+    "category": "dinner",
+    "neighborhood": "Williamsburg",
+    "lat": 40.709168,
+    "lng": -73.96168,
+    "priceLevel": 2,
+    "rating": 4.1,
+    "vibeTags": [
+      "romantic",
+      "foodie",
+      "chill"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "484 1st Ave, Williamsburg, NY"
+  },
+  {
+    "id": "v47",
+    "name": "The Hidden Room & Co.",
+    "category": "drinks",
+    "neighborhood": "Williamsburg",
+    "lat": 40.708353,
+    "lng": -73.952203,
+    "priceLevel": 4,
+    "rating": 3.8,
+    "vibeTags": [
+      "adventurous",
+      "casual",
+      "chill"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "106 1st Ave, Williamsburg, NY"
+  },
+  {
+    "id": "v48",
+    "name": "Low Owl",
+    "category": "drinks",
+    "neighborhood": "Williamsburg",
+    "lat": 40.70308,
+    "lng": -73.955731,
+    "priceLevel": 2,
+    "rating": 4.7,
+    "vibeTags": [
+      "romantic",
+      "casual",
+      "foodie"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "108 Bedford Ave, Williamsburg, NY"
+  },
+  {
+    "id": "v49",
+    "name": "Uptown Gallery",
+    "category": "activity",
+    "neighborhood": "Williamsburg",
+    "lat": 40.707447,
+    "lng": -73.953073,
+    "priceLevel": 2,
+    "rating": 4.7,
+    "vibeTags": [
+      "adventurous",
+      "romantic"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "434 5th Ave, Williamsburg, NY"
+  },
+  {
+    "id": "v50",
+    "name": "Neighborhood Arcade",
+    "category": "activity",
+    "neighborhood": "Williamsburg",
+    "lat": 40.70337,
+    "lng": -73.952268,
+    "priceLevel": 2,
+    "rating": 4.4,
+    "vibeTags": [
+      "casual",
+      "chill",
+      "adventurous"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "120 5th Ave, Williamsburg, NY"
+  },
+  {
+    "id": "v51",
+    "name": "The Little Bake Shop",
+    "category": "dessert",
+    "neighborhood": "Williamsburg",
+    "lat": 40.702599,
+    "lng": -73.9623,
+    "priceLevel": 1,
+    "rating": 4,
+    "vibeTags": [
+      "casual",
+      "chill"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "471 1st Ave, Williamsburg, NY"
+  },
+  {
+    "id": "v52",
+    "name": "Sunday Coffee Co.",
+    "category": "coffee",
+    "neighborhood": "DUMBO",
+    "lat": 40.697884,
+    "lng": -73.984339,
+    "priceLevel": 2,
+    "rating": 4.5,
+    "vibeTags": [
+      "casual",
+      "adventurous"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "407 1st Ave, DUMBO, NY"
+  },
+  {
+    "id": "v53",
+    "name": "Third Wave Coffee Room",
+    "category": "coffee",
+    "neighborhood": "DUMBO",
+    "lat": 40.70749,
+    "lng": -73.990688,
+    "priceLevel": 2,
+    "rating": 4.2,
+    "vibeTags": [
+      "artsy",
+      "chill"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "446 1st Ave, DUMBO, NY"
+  },
+  {
+    "id": "v54",
+    "name": "Green Kitchen",
+    "category": "lunch",
+    "neighborhood": "DUMBO",
+    "lat": 40.699944,
+    "lng": -73.987759,
+    "priceLevel": 2,
+    "rating": 3.9,
+    "vibeTags": [
+      "casual",
+      "chill",
+      "foodie"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "486 Mulberry St, DUMBO, NY"
+  },
+  {
+    "id": "v55",
+    "name": "The Rustic Table",
+    "category": "dinner",
+    "neighborhood": "DUMBO",
+    "lat": 40.704557,
+    "lng": -73.993909,
+    "priceLevel": 3,
+    "rating": 4,
+    "vibeTags": [
+      "foodie",
+      "romantic",
+      "artsy"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "286 Grand St, DUMBO, NY"
+  },
+  {
+    "id": "v56",
+    "name": "The Copper Pot",
+    "category": "dinner",
+    "neighborhood": "DUMBO",
+    "lat": 40.702278,
+    "lng": -73.983135,
+    "priceLevel": 2,
+    "rating": 4.4,
+    "vibeTags": [
+      "romantic",
+      "foodie",
+      "artsy"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "292 Mulberry St, DUMBO, NY"
+  },
+  {
+    "id": "v57",
+    "name": "Low Room",
+    "category": "drinks",
+    "neighborhood": "DUMBO",
+    "lat": 40.707908,
+    "lng": -73.987965,
+    "priceLevel": 1,
+    "rating": 4,
+    "vibeTags": [
+      "adventurous",
+      "romantic"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "479 Grand St, DUMBO, NY"
+  },
+  {
+    "id": "v58",
+    "name": "Neighborhood Rooftop Garden",
+    "category": "activity",
+    "neighborhood": "DUMBO",
+    "lat": 40.703857,
+    "lng": -73.992464,
+    "priceLevel": 3,
+    "rating": 3.8,
+    "vibeTags": [
+      "artsy",
+      "casual"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "118 Bedford Ave, DUMBO, NY"
+  },
+  {
+    "id": "v59",
+    "name": "Moonlight Bake Shop",
+    "category": "dessert",
+    "neighborhood": "DUMBO",
+    "lat": 40.702115,
+    "lng": -73.982689,
+    "priceLevel": 1,
+    "rating": 3.8,
+    "vibeTags": [
+      "casual",
+      "chill"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "248 5th Ave, DUMBO, NY"
+  },
+  {
+    "id": "v60",
+    "name": "Corner Brew House",
+    "category": "coffee",
+    "neighborhood": "Upper West Side",
+    "lat": 40.790425,
+    "lng": -73.97841,
+    "priceLevel": 2,
+    "rating": 4.4,
+    "vibeTags": [
+      "artsy",
+      "adventurous"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "372 Bleecker St, Upper West Side, NY"
+  },
+  {
+    "id": "v61",
+    "name": "Corner Deli",
+    "category": "lunch",
+    "neighborhood": "Upper West Side",
+    "lat": 40.781405,
+    "lng": -73.978998,
+    "priceLevel": 1,
+    "rating": 4.7,
+    "vibeTags": [
+      "foodie",
+      "chill",
+      "adventurous"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "463 1st Ave, Upper West Side, NY"
+  },
+  {
+    "id": "v62",
+    "name": "Lantern & Otto",
+    "category": "dinner",
+    "neighborhood": "Upper West Side",
+    "lat": 40.782762,
+    "lng": -73.971869,
+    "priceLevel": 2,
+    "rating": 3.9,
+    "vibeTags": [
+      "adventurous",
+      "romantic",
+      "foodie"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "180 Bedford Ave, Upper West Side, NY"
+  },
+  {
+    "id": "v63",
+    "name": "Amber Key Lounge",
+    "category": "drinks",
+    "neighborhood": "Upper West Side",
+    "lat": 40.787722,
+    "lng": -73.981375,
+    "priceLevel": 2,
+    "rating": 4.1,
+    "vibeTags": [
+      "romantic",
+      "casual",
+      "artsy"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "265 Bedford Ave, Upper West Side, NY"
+  },
+  {
+    "id": "v64",
+    "name": "Low Room",
+    "category": "drinks",
+    "neighborhood": "Upper West Side",
+    "lat": 40.792358,
+    "lng": -73.97261,
+    "priceLevel": 2,
+    "rating": 4.4,
+    "vibeTags": [
+      "romantic",
+      "adventurous"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "399 Court St, Upper West Side, NY"
+  },
+  {
+    "id": "v65",
+    "name": "Riverside Gallery",
+    "category": "activity",
+    "neighborhood": "Upper West Side",
+    "lat": 40.792022,
+    "lng": -73.977143,
+    "priceLevel": 2,
+    "rating": 4.1,
+    "vibeTags": [
+      "artsy",
+      "adventurous"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "414 Bleecker St, Upper West Side, NY"
+  },
+  {
+    "id": "v66",
+    "name": "Cloud Nine Bake Shop",
+    "category": "dessert",
+    "neighborhood": "Upper West Side",
+    "lat": 40.788224,
+    "lng": -73.971358,
+    "priceLevel": 3,
+    "rating": 4.4,
+    "vibeTags": [
+      "romantic",
+      "chill",
+      "adventurous"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "470 Mulberry St, Upper West Side, NY"
+  },
+  {
+    "id": "v67",
+    "name": "Sweet Gelato Bar",
+    "category": "dessert",
+    "neighborhood": "Upper West Side",
+    "lat": 40.791516,
+    "lng": -73.97788,
+    "priceLevel": 1,
+    "rating": 4.7,
+    "vibeTags": [
+      "romantic",
+      "foodie"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "206 Bedford Ave, Upper West Side, NY"
+  },
+  {
+    "id": "v68",
+    "name": "Corner Espresso Bar",
+    "category": "coffee",
+    "neighborhood": "Upper East Side",
+    "lat": 40.769072,
+    "lng": -73.954171,
+    "priceLevel": 2,
+    "rating": 4.8,
+    "vibeTags": [
+      "artsy",
+      "romantic"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "274 Court St, Upper East Side, NY"
+  },
+  {
+    "id": "v69",
+    "name": "The Deli",
+    "category": "lunch",
+    "neighborhood": "Upper East Side",
+    "lat": 40.775132,
+    "lng": -73.958605,
+    "priceLevel": 2,
+    "rating": 4.1,
+    "vibeTags": [
+      "foodie",
+      "casual",
+      "artsy"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "306 Bleecker St, Upper East Side, NY"
+  },
+  {
+    "id": "v70",
+    "name": "Casa Fern",
+    "category": "dinner",
+    "neighborhood": "Upper East Side",
+    "lat": 40.779134,
+    "lng": -73.960072,
+    "priceLevel": 2,
+    "rating": 4.4,
+    "vibeTags": [
+      "adventurous",
+      "romantic",
+      "artsy"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "145 Mulberry St, Upper East Side, NY"
+  },
+  {
+    "id": "v71",
+    "name": "Night Flask",
+    "category": "drinks",
+    "neighborhood": "Upper East Side",
+    "lat": 40.771162,
+    "lng": -73.960784,
+    "priceLevel": 1,
+    "rating": 4,
+    "vibeTags": [
+      "casual",
+      "romantic",
+      "chill"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "128 Bedford Ave, Upper East Side, NY"
+  },
+  {
+    "id": "v72",
+    "name": "Night Key Lounge",
+    "category": "drinks",
+    "neighborhood": "Upper East Side",
+    "lat": 40.769881,
+    "lng": -73.960112,
+    "priceLevel": 4,
+    "rating": 3.7,
+    "vibeTags": [
+      "casual",
+      "romantic",
+      "chill"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "336 Mulberry St, Upper East Side, NY"
+  },
+  {
+    "id": "v73",
+    "name": "Uptown Gallery",
+    "category": "activity",
+    "neighborhood": "Upper East Side",
+    "lat": 40.777999,
+    "lng": -73.961119,
+    "priceLevel": 2,
+    "rating": 4.6,
+    "vibeTags": [
+      "adventurous",
+      "chill"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "267 Bedford Ave, Upper East Side, NY"
+  },
+  {
+    "id": "v74",
+    "name": "The Little Gelato Bar",
+    "category": "dessert",
+    "neighborhood": "Upper East Side",
+    "lat": 40.772052,
+    "lng": -73.959569,
+    "priceLevel": 1,
+    "rating": 4.2,
+    "vibeTags": [
+      "chill",
+      "romantic"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "369 Mulberry St, Upper East Side, NY"
+  },
+  {
+    "id": "v75",
+    "name": "Third Wave Espresso Bar",
+    "category": "coffee",
+    "neighborhood": "Midtown",
+    "lat": 40.756129,
+    "lng": -73.982926,
+    "priceLevel": 2,
+    "rating": 4.3,
+    "vibeTags": [
+      "artsy",
+      "chill",
+      "romantic"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "256 Bleecker St, Midtown, NY"
+  },
+  {
+    "id": "v76",
+    "name": "The Bistro",
+    "category": "lunch",
+    "neighborhood": "Midtown",
+    "lat": 40.751544,
+    "lng": -73.985677,
+    "priceLevel": 2,
+    "rating": 4.5,
+    "vibeTags": [
+      "chill",
+      "romantic"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "365 Bedford Ave, Midtown, NY"
+  },
+  {
+    "id": "v77",
+    "name": "The Copper Table",
+    "category": "dinner",
+    "neighborhood": "Midtown",
+    "lat": 40.752749,
+    "lng": -73.978082,
+    "priceLevel": 3,
+    "rating": 4.6,
+    "vibeTags": [
+      "romantic"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "136 Mulberry St, Midtown, NY"
+  },
+  {
+    "id": "v78",
+    "name": "The Velvet Room & Co.",
+    "category": "drinks",
+    "neighborhood": "Midtown",
+    "lat": 40.750122,
+    "lng": -73.984622,
+    "priceLevel": 3,
+    "rating": 4.6,
+    "vibeTags": [
+      "adventurous",
+      "romantic"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "241 Bedford Ave, Midtown, NY"
+  },
+  {
+    "id": "v79",
+    "name": "Amber Flask",
+    "category": "drinks",
+    "neighborhood": "Midtown",
+    "lat": 40.751764,
+    "lng": -73.986318,
+    "priceLevel": 3,
+    "rating": 4.1,
+    "vibeTags": [
+      "casual",
+      "artsy"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "286 1st Ave, Midtown, NY"
+  },
+  {
+    "id": "v80",
+    "name": "Uptown Escape Room",
+    "category": "activity",
+    "neighborhood": "Midtown",
+    "lat": 40.756028,
+    "lng": -73.983689,
+    "priceLevel": 4,
+    "rating": 4.3,
+    "vibeTags": [
+      "casual",
+      "adventurous"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "238 1st Ave, Midtown, NY"
+  },
+  {
+    "id": "v81",
+    "name": "Downtown Art Studio",
+    "category": "activity",
+    "neighborhood": "Midtown",
+    "lat": 40.751714,
+    "lng": -73.980083,
+    "priceLevel": 3,
+    "rating": 3.9,
+    "vibeTags": [
+      "casual",
+      "adventurous"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "138 Grand St, Midtown, NY"
+  },
+  {
+    "id": "v82",
+    "name": "Moonlight Bakeshop",
+    "category": "dessert",
+    "neighborhood": "Midtown",
+    "lat": 40.750587,
+    "lng": -73.984639,
+    "priceLevel": 1,
+    "rating": 3.7,
+    "vibeTags": [
+      "romantic",
+      "chill"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "306 Bleecker St, Midtown, NY"
+  },
+  {
+    "id": "v83",
+    "name": "Third Wave Espresso Bar",
+    "category": "coffee",
+    "neighborhood": "Astoria",
+    "lat": 40.760718,
+    "lng": -73.922917,
+    "priceLevel": 4,
+    "rating": 3.8,
+    "vibeTags": [
+      "casual",
+      "artsy"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "270 Court St, Astoria, NY"
+  },
+  {
+    "id": "v84",
+    "name": "Third Wave Brew House",
+    "category": "coffee",
+    "neighborhood": "Astoria",
+    "lat": 40.764494,
+    "lng": -73.921327,
+    "priceLevel": 1,
+    "rating": 3.8,
+    "vibeTags": [
+      "chill",
+      "artsy"
+    ],
+    "description": "A cozy spot to ease into the day with a great espresso and quiet corners to talk.",
+    "address": "186 5th Ave, Astoria, NY"
+  },
+  {
+    "id": "v85",
+    "name": "Corner Sandwich Shop",
+    "category": "lunch",
+    "neighborhood": "Astoria",
+    "lat": 40.769076,
+    "lng": -73.922847,
+    "priceLevel": 3,
+    "rating": 4.6,
+    "vibeTags": [
+      "chill"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "427 Court St, Astoria, NY"
+  },
+  {
+    "id": "v86",
+    "name": "Corner Kitchen",
+    "category": "lunch",
+    "neighborhood": "Astoria",
+    "lat": 40.760002,
+    "lng": -73.924546,
+    "priceLevel": 1,
+    "rating": 4.1,
+    "vibeTags": [
+      "chill"
+    ],
+    "description": "Relaxed daytime spot, easy to linger over a shared plate.",
+    "address": "351 Court St, Astoria, NY"
+  },
+  {
+    "id": "v87",
+    "name": "Casa Fern",
+    "category": "dinner",
+    "neighborhood": "Astoria",
+    "lat": 40.766368,
+    "lng": -73.925463,
+    "priceLevel": 1,
+    "rating": 4.7,
+    "vibeTags": [
+      "romantic",
+      "chill"
+    ],
+    "description": "A warmly lit dining room built for a leisurely, conversation-friendly meal.",
+    "address": "408 Bleecker St, Astoria, NY"
+  },
+  {
+    "id": "v88",
+    "name": "The Hidden Flask",
+    "category": "drinks",
+    "neighborhood": "Astoria",
+    "lat": 40.76426,
+    "lng": -73.927017,
+    "priceLevel": 3,
+    "rating": 4.1,
+    "vibeTags": [
+      "casual",
+      "adventurous",
+      "chill"
+    ],
+    "description": "Low lights, good cocktails, and enough noise to feel lively without shouting.",
+    "address": "424 Bedford Ave, Astoria, NY"
+  },
+  {
+    "id": "v89",
+    "name": "Neighborhood Arcade",
+    "category": "activity",
+    "neighborhood": "Astoria",
+    "lat": 40.764555,
+    "lng": -73.928341,
+    "priceLevel": 3,
+    "rating": 4.6,
+    "vibeTags": [
+      "casual",
+      "adventurous"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "422 Grand St, Astoria, NY"
+  },
+  {
+    "id": "v90",
+    "name": "The Bowling Lounge",
+    "category": "activity",
+    "neighborhood": "Astoria",
+    "lat": 40.769856,
+    "lng": -73.922614,
+    "priceLevel": 3,
+    "rating": 3.9,
+    "vibeTags": [
+      "adventurous",
+      "chill"
+    ],
+    "description": "A hands-on, memorable way to spend an hour together that isn't just sitting at a table.",
+    "address": "389 5th Ave, Astoria, NY"
+  },
+  {
+    "id": "v91",
+    "name": "Cloud Nine Creamery",
+    "category": "dessert",
+    "neighborhood": "Astoria",
+    "lat": 40.76785,
+    "lng": -73.919587,
+    "priceLevel": 2,
+    "rating": 3.8,
+    "vibeTags": [
+      "casual"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "217 Mulberry St, Astoria, NY"
+  },
+  {
+    "id": "v92",
+    "name": "Moonlight Bake Shop",
+    "category": "dessert",
+    "neighborhood": "Astoria",
+    "lat": 40.759415,
+    "lng": -73.926148,
+    "priceLevel": 3,
+    "rating": 4.2,
+    "vibeTags": [
+      "casual",
+      "romantic"
+    ],
+    "description": "The kind of last stop that turns a good night into a great one.",
+    "address": "450 5th Ave, Astoria, NY"
+  }
+]
