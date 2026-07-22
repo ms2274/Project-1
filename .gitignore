@@ -1,0 +1,11 @@
+.env
+venv/
+__pycache__/
+*.pyc
+
+# Personal speech recordings and transcripts stay local
+recordings/
+sessions.jsonl
+*.wav
+
+weather_email.log

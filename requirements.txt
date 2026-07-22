@@ -1,2 +1,8 @@
 requests==2.31.0
 python-dotenv==1.0.0
+
+# Speech practice logger
+sounddevice==0.4.7
+soundfile==0.12.1
+numpy==1.26.4
+openai-whisper==20231117
