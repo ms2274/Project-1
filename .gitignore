@@ -1,0 +1,27 @@
+# Next.js
+.next/
+out/
+build/
+
+# dependencies
+node_modules/
+
+# env
+.env
+.env.local
+.env*.local
+
+# misc
+.DS_Store
+*.log
+npm-debug.log*
+
+# Python (weather script)
+venv/
+__pycache__/
+*.pyc
+weather_email.log
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
