@@ -21,50 +21,115 @@ export interface PrepSheetTimeframeLevels {
   lvnZones: { low: number; high: number }[];
 }
 
+export interface TrendTierInput {
+  classification: string;
+  rationale: string;
+  recentSwingHighs: number[];
+  recentSwingLows: number[];
+}
+
+export interface SrLevelInput {
+  label: string;
+  price: number;
+}
+
+export interface SessionLevelsInput {
+  date: string;
+  open: number;
+  hod: number;
+  lod: number;
+  close: number;
+}
+
+export interface DailyBarInput {
+  date: string;
+  o: number;
+  h: number;
+  l: number;
+  c: number;
+  v: number;
+}
+
+export interface HolidayInput {
+  date: string;
+  name: string;
+  status: string;
+}
+
 export interface PrepSheetInput {
   symbol: string;
   date: string;
-  vix: { price: number; changePercent: number; regime: string };
+  currentPrice: number;
+  vix: { price: number; changePercent: number; regime: string } | null;
   trend: {
-    classification: string;
-    rationale: string;
-    recentSwingHighs: number[];
-    recentSwingLows: number[];
+    primary: TrendTierInput;
+    secondary: TrendTierInput;
+    minor: TrendTierInput;
   };
   timeframes: PrepSheetTimeframeLevels[];
+  srLadder: { resistance: SrLevelInput[]; support: SrLevelInput[] };
+  sessionLevels: { today?: SessionLevelsInput; prevDay?: SessionLevelsInput };
+  recentDailyBars: DailyBarInput[];
+  upcomingHolidays: HolidayInput[];
 }
 
-export type RelativePosition = "above_value_area" | "below_value_area" | "inside_value_area";
+export interface GamePlanScenario {
+  title: string;
+  description: string;
+}
 
-export interface LvnInflectionZone {
+export interface GamePlan {
+  primaryBias: string;
+  scenarios: GamePlanScenario[];
+  avoid: string;
+}
+
+export type ZoneStrength = "strong" | "moderate";
+
+export interface SupplyDemandZoneDetail {
   low: number;
   high: number;
-  timeframe: string;
-  relativePosition: RelativePosition;
+  strength: ZoneStrength;
   rationale: string;
 }
 
-interface LvnZoneDraft {
-  low: number;
-  high: number;
-  timeframe: string;
+export type PlayDirection = "long" | "short";
+export type PlayGrade = "A" | "B" | "C";
+
+interface OptionsPlayDraft {
+  title: string;
+  direction: PlayDirection;
+  strikeGuidance: string;
+  dteRange: string;
+  entryTrigger: number;
+  stopPrice: number;
+  targetPrice: number;
+  grade: PlayGrade;
   rationale: string;
+}
+
+export interface OptionsPlay extends OptionsPlayDraft {
+  riskRewardRatio: number;
 }
 
 interface PrepSheetAnalysisDraft {
   trendSummary: string;
   vixSummary: string;
-  lvnZones: LvnZoneDraft[];
-  narrative: string;
-  watchouts: string[];
+  redFlags: string[];
+  gamePlan: GamePlan;
+  supplyZones: SupplyDemandZoneDetail[];
+  demandZones: SupplyDemandZoneDetail[];
+  optionsPlays: OptionsPlayDraft[];
 }
 
 export interface PrepSheetAnalysis {
   trendSummary: string;
   vixSummary: string;
-  lvnZones: LvnInflectionZone[];
-  narrative: string;
-  watchouts: string[];
+  redFlags: string[];
+  gamePlan: GamePlan;
+  supplyZones: SupplyDemandZoneDetail[];
+  demandZones: SupplyDemandZoneDetail[];
+  optionsPlays: OptionsPlay[];
 }
 
 export interface PrepSheetOutput extends PrepSheetAnalysis {
@@ -72,49 +137,110 @@ export interface PrepSheetOutput extends PrepSheetAnalysis {
   date: string;
 }
 
+const ZONE_ITEM_SCHEMA = {
+  type: "object",
+  properties: {
+    low: { type: "number" },
+    high: { type: "number" },
+    strength: { type: "string", enum: ["strong", "moderate"] },
+    rationale: { type: "string" },
+  },
+  required: ["low", "high", "strength", "rationale"],
+};
+
 const PREP_SHEET_TOOL: Anthropic.Tool = {
   name: "generate_prep_sheet",
-  description:
-    "Record a structured, prep-only trading context sheet. Never include buy/sell/entry/exit signals, and never label LVN zones as supply/demand zones.",
+  description: "Record a structured morning prep sheet: trend read, red flags, game plan, graded supply/demand zones, and options play ideas.",
   input_schema: {
     type: "object",
     properties: {
       trendSummary: {
         type: "string",
-        description: "1-2 sentence read on the weekly Dow Theory trend and how confidently it's confirmed.",
+        description: "1-3 sentences reconciling Primary/Secondary/Minor trend into one coherent read.",
       },
       vixSummary: {
         type: "string",
-        description: "1-2 sentence read on the VIX regime and what it implies for option pricing/behavior today.",
+        description: "1-2 sentences on VIX regime and its implication for option pricing today.",
       },
-      lvnZones: {
+      redFlags: {
         type: "array",
-        description:
-          "One entry per LVN zone given in the input (same count, same low/high values, unchanged, same order) — not supply/demand zones, and not the value area itself. Do not classify position relative to the value area yourself — that is computed separately from the numbers; just describe each zone.",
+        items: { type: "string" },
+        description: "Session-specific caveats (holiday/early-close within ~1 week, data gaps, VIX unavailable, choppy sandwiched price action, stalling trend tier).",
+      },
+      gamePlan: {
+        type: "object",
+        properties: {
+          primaryBias: { type: "string" },
+          scenarios: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                title: { type: "string" },
+                description: { type: "string" },
+              },
+              required: ["title", "description"],
+            },
+          },
+          avoid: { type: "string" },
+        },
+        required: ["primaryBias", "scenarios", "avoid"],
+      },
+      supplyZones: { type: "array", items: ZONE_ITEM_SCHEMA },
+      demandZones: { type: "array", items: ZONE_ITEM_SCHEMA },
+      optionsPlays: {
+        type: "array",
         items: {
           type: "object",
           properties: {
-            low: { type: "number" },
-            high: { type: "number" },
-            timeframe: { type: "string" },
+            title: { type: "string" },
+            direction: { type: "string", enum: ["long", "short"] },
+            strikeGuidance: { type: "string" },
+            dteRange: { type: "string" },
+            entryTrigger: { type: "number" },
+            stopPrice: { type: "number" },
+            targetPrice: { type: "number" },
+            grade: { type: "string", enum: ["A", "B", "C"] },
             rationale: { type: "string" },
           },
-          required: ["low", "high", "timeframe", "rationale"],
+          required: [
+            "title",
+            "direction",
+            "strikeGuidance",
+            "dteRange",
+            "entryTrigger",
+            "stopPrice",
+            "targetPrice",
+            "grade",
+            "rationale",
+          ],
         },
       },
-      narrative: {
-        type: "string",
-        description: "A few sentences synthesizing trend + VIX regime + LVN zones into prep context. No trade signals.",
-      },
-      watchouts: {
-        type: "array",
-        items: { type: "string" },
-        description: "Things that would invalidate or complicate today's read.",
-      },
     },
-    required: ["trendSummary", "vixSummary", "lvnZones", "narrative", "watchouts"],
+    required: ["trendSummary", "vixSummary", "redFlags", "gamePlan", "supplyZones", "demandZones", "optionsPlays"],
   },
 };
+
+// Direction-aware reward:risk. Returns null if the stop/target ordering is
+// inconsistent with the stated direction (invalid play, dropped by the caller).
+function computeRiskReward(play: OptionsPlayDraft): number | null {
+  let risk: number;
+  let reward: number;
+
+  if (play.direction === "long") {
+    risk = play.entryTrigger - play.stopPrice;
+    reward = play.targetPrice - play.entryTrigger;
+  } else {
+    risk = play.stopPrice - play.entryTrigger;
+    reward = play.entryTrigger - play.targetPrice;
+  }
+
+  if (risk <= 0 || reward <= 0) return null;
+  return reward / risk;
+}
+
+const MIN_RISK_REWARD = 3;
+const RISK_REWARD_EPSILON = 0.001;
 
 export async function generatePrepSheet(
   input: PrepSheetInput
@@ -123,24 +249,14 @@ export async function generatePrepSheet(
 
   const message = await anthropic.messages.create({
     model: MODEL,
-    max_tokens: 2000,
+    max_tokens: 4000,
     system: PREP_SHEET_SYSTEM_PROMPT,
     tools: [PREP_SHEET_TOOL],
     tool_choice: { type: "tool", name: "generate_prep_sheet" },
     messages: [
       {
         role: "user",
-        content: JSON.stringify(
-          {
-            symbol: input.symbol,
-            date: input.date,
-            vix: input.vix,
-            trend: input.trend,
-            timeframes: input.timeframes,
-          },
-          null,
-          2
-        ),
+        content: JSON.stringify(input, null, 2),
       },
     ],
   });
@@ -155,43 +271,25 @@ export async function generatePrepSheet(
   }
 
   const draft = toolUse.input as PrepSheetAnalysisDraft;
-  const valueAreaByTimeframe = new Map(input.timeframes.map((tf) => [tf.label, tf]));
 
-  const lvnZones: LvnInflectionZone[] = draft.lvnZones.map((zone) => {
-    const tf = valueAreaByTimeframe.get(zone.timeframe);
-    return {
-      ...zone,
-      relativePosition: tf
-        ? computeRelativePosition(zone.low, zone.high, tf.val, tf.vah)
-        : "inside_value_area",
-    };
-  });
+  const optionsPlays: OptionsPlay[] = draft.optionsPlays
+    .map((play) => {
+      const riskRewardRatio = computeRiskReward(play);
+      return riskRewardRatio !== null ? { ...play, riskRewardRatio } : null;
+    })
+    .filter((play): play is OptionsPlay => play !== null && play.riskRewardRatio >= MIN_RISK_REWARD - RISK_REWARD_EPSILON);
 
   const output: PrepSheetOutput = {
     symbol: input.symbol,
     date: input.date,
     trendSummary: draft.trendSummary,
     vixSummary: draft.vixSummary,
-    lvnZones,
-    narrative: draft.narrative,
-    watchouts: draft.watchouts,
+    redFlags: draft.redFlags,
+    gamePlan: draft.gamePlan,
+    supplyZones: draft.supplyZones,
+    demandZones: draft.demandZones,
+    optionsPlays,
   };
 
   return { output, raw };
-}
-
-// Claude echoes back low/high as cleaned-up decimals (e.g. 754.81) rather than the
-// exact float the bin math produced (e.g. 754.8100000000001), so boundary comparisons
-// need slack — real price levels never differ by anything close to this epsilon.
-const BOUNDARY_EPSILON = 1e-6;
-
-function computeRelativePosition(
-  zoneLow: number,
-  zoneHigh: number,
-  val: number,
-  vah: number
-): RelativePosition {
-  if (zoneHigh <= val + BOUNDARY_EPSILON) return "below_value_area";
-  if (zoneLow >= vah - BOUNDARY_EPSILON) return "above_value_area";
-  return "inside_value_area";
 }
