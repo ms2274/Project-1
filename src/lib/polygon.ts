@@ -120,3 +120,37 @@ export async function getWeeklyBars(ticker: string, years = 2): Promise<PolygonB
   const from = new Date(to.getTime() - years * 365 * 86_400_000);
   return fetchAggregateBars(ticker, 1, "week", from, to);
 }
+
+export async function getDailyBars(ticker: string, days = 90): Promise<PolygonBar[]> {
+  const to = new Date();
+  const from = new Date(to.getTime() - days * 86_400_000);
+  return fetchAggregateBars(ticker, 1, "day", from, to);
+}
+
+export interface MarketHoliday {
+  date: string;
+  name: string;
+  status: string;
+}
+
+export async function getUpcomingMarketHolidays(): Promise<MarketHoliday[]> {
+  const apiKey = requireApiKey();
+  const url = `${POLYGON_BASE_URL}/v1/marketstatus/upcoming?apiKey=${apiKey}`;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Polygon market holidays request failed (${res.status}): ${body.slice(0, 500)}`);
+  }
+
+  const json = await res.json();
+  if (!Array.isArray(json)) return [];
+
+  return json
+    .filter((entry) => entry.exchange === "NYSE" || entry.exchange === undefined)
+    .map((entry) => ({
+      date: entry.date,
+      name: entry.name,
+      status: entry.status,
+    }));
+}

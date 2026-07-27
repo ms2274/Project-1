@@ -13,7 +13,7 @@ export interface DowTheoryResult {
   rationale: string;
 }
 
-function findSwingPoints(
+export function findSwingPoints(
   bars: { t: number; h: number; l: number }[],
   lookback = 2
 ): { highs: SwingPoint[]; lows: SwingPoint[] } {
@@ -48,11 +48,12 @@ function fmt(points: SwingPoint[]): string {
   return points.map((p) => p.price.toFixed(2)).join(" -> ");
 }
 
-export function classifyWeeklyTrend(
-  weeklyBars: { t: number; h: number; l: number }[],
+export function classifyTrend(
+  bars: { t: number; h: number; l: number }[],
+  swingLookback = 2,
   confirmationSwings = 2
 ): DowTheoryResult {
-  const { highs, lows } = findSwingPoints(weeklyBars, 2);
+  const { highs, lows } = findSwingPoints(bars, swingLookback);
   const recentHighs = highs.slice(-confirmationSwings);
   const recentLows = lows.slice(-confirmationSwings);
 
@@ -74,7 +75,7 @@ export function classifyWeeklyTrend(
   );
 
   let trend: TrendClassification = "sideways";
-  let rationale = "No clear sequence of higher/lower highs and lows in recent weekly swings.";
+  let rationale = "No clear sequence of higher/lower highs and lows in the recent swing history.";
 
   if (higherHighs && higherLows) {
     trend = "uptrend";
@@ -85,4 +86,20 @@ export function classifyWeeklyTrend(
   }
 
   return { trend, swingHighs: highs, swingLows: lows, rationale };
+}
+
+export function classifyWeeklyTrend(
+  weeklyBars: { t: number; h: number; l: number }[],
+  confirmationSwings = 2
+): DowTheoryResult {
+  return classifyTrend(weeklyBars, 2, confirmationSwings);
+}
+
+export function classifyDailyTrend(
+  dailyBars: { t: number; h: number; l: number }[],
+  lookbackDays: number,
+  confirmationSwings = 2
+): DowTheoryResult {
+  const window = dailyBars.slice(-lookbackDays);
+  return classifyTrend(window, 2, confirmationSwings);
 }
