@@ -18,10 +18,24 @@ regime, all already calculated and provided to you — into a written context
 sheet the trader reads before making their own decision while watching live
 order flow themselves.
 
-Identify candidate supply/demand zones using the provided LVN zones and value
-area boundaries as your primary ingredients — describe them as ranges to
-watch, not as directives to act on. Reference only price levels present in
-the input; never invent a level. If the weekly trend is "sideways", say so
-plainly instead of forcing a narrative onto it. Keep the tone analytical and
-neutral, like a market-structure briefing, not a trade call.
+Important distinction: the trader's own Carmine Rosato-style supply/demand
+zones come from their own visual read of price-action consolidation on their
+charts — that is their discretionary skill, not something you have the data
+to reproduce, and you must never label anything a "supply zone" or "demand
+zone" or imply you've identified one. LVN zones are a different, purely
+volume-derived concept (thin-volume price regions from the volume profile)
+and must be presented only as "LVN zones" or "inflection zones" — not
+relabeled as supply/demand.
+
+For the lvnZones output, produce exactly one entry per LVN zone given in the
+input for each timeframe, preserving its low/high/timeframe values unchanged.
+Do not invent additional zones and do not use the value area (VAH/VAL) itself
+as a zone — the value area is a separate concept from an LVN. For each zone,
+classify its relativePosition as "above_value_area", "below_value_area", or
+"inside_value_area" relative to that same timeframe's VAH/VAL, and write a
+one-sentence rationale referencing the nearby POC/VAH/VAL for context.
+Reference only price levels present in the input; never invent a level. If
+the weekly trend is "sideways", say so plainly instead of forcing a narrative
+onto it. Keep the tone analytical and neutral, like a market-structure
+briefing, not a trade call.
 `.trim();

@@ -34,18 +34,18 @@ export interface PrepSheetInput {
   timeframes: PrepSheetTimeframeLevels[];
 }
 
-export interface SupplyDemandZone {
-  type: "supply" | "demand";
+export interface LvnInflectionZone {
   low: number;
   high: number;
   timeframe: string;
+  relativePosition: "above_value_area" | "below_value_area" | "inside_value_area";
   rationale: string;
 }
 
 export interface PrepSheetAnalysis {
   trendSummary: string;
   vixSummary: string;
-  supplyDemandZones: SupplyDemandZone[];
+  lvnZones: LvnInflectionZone[];
   narrative: string;
   watchouts: string[];
 }
@@ -58,7 +58,7 @@ export interface PrepSheetOutput extends PrepSheetAnalysis {
 const PREP_SHEET_TOOL: Anthropic.Tool = {
   name: "generate_prep_sheet",
   description:
-    "Record a structured, prep-only trading context sheet. Never include buy/sell/entry/exit signals.",
+    "Record a structured, prep-only trading context sheet. Never include buy/sell/entry/exit signals, and never label LVN zones as supply/demand zones.",
   input_schema: {
     type: "object",
     properties: {
@@ -70,23 +70,28 @@ const PREP_SHEET_TOOL: Anthropic.Tool = {
         type: "string",
         description: "1-2 sentence read on the VIX regime and what it implies for option pricing/behavior today.",
       },
-      supplyDemandZones: {
+      lvnZones: {
         type: "array",
+        description:
+          "One entry per LVN zone given in the input (same count, same low/high values, unchanged) — not supply/demand zones, and not the value area itself.",
         items: {
           type: "object",
           properties: {
-            type: { type: "string", enum: ["supply", "demand"] },
             low: { type: "number" },
             high: { type: "number" },
             timeframe: { type: "string" },
+            relativePosition: {
+              type: "string",
+              enum: ["above_value_area", "below_value_area", "inside_value_area"],
+            },
             rationale: { type: "string" },
           },
-          required: ["type", "low", "high", "timeframe", "rationale"],
+          required: ["low", "high", "timeframe", "relativePosition", "rationale"],
         },
       },
       narrative: {
         type: "string",
-        description: "A few sentences synthesizing trend + VIX regime + zones into prep context. No trade signals.",
+        description: "A few sentences synthesizing trend + VIX regime + LVN zones into prep context. No trade signals.",
       },
       watchouts: {
         type: "array",
@@ -94,7 +99,7 @@ const PREP_SHEET_TOOL: Anthropic.Tool = {
         description: "Things that would invalidate or complicate today's read.",
       },
     },
-    required: ["trendSummary", "vixSummary", "supplyDemandZones", "narrative", "watchouts"],
+    required: ["trendSummary", "vixSummary", "lvnZones", "narrative", "watchouts"],
   },
 };
 
