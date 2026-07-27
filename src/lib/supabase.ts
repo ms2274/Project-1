@@ -18,7 +18,44 @@ create index if not exists prep_sheets_symbol_date_idx
   on prep_sheets (symbol, trade_date desc);
 `.trim();
 
-let cachedClient: ReturnType<typeof createClient> | null = null;
+export type PrepSheetRow = {
+  id: string;
+  symbol: string;
+  trade_date: string;
+  generated_at: string;
+  levels: unknown;
+  analysis: unknown;
+  raw_claude_response: string | null;
+};
+
+type PrepSheetInsert = {
+  id?: string;
+  symbol: string;
+  trade_date: string;
+  generated_at?: string;
+  levels: unknown;
+  analysis: unknown;
+  raw_claude_response?: string | null;
+};
+
+type Database = {
+  public: {
+    Tables: {
+      prep_sheets: {
+        Row: PrepSheetRow;
+        Insert: PrepSheetInsert;
+        Update: Partial<PrepSheetInsert>;
+        Relationships: [];
+      };
+    };
+    Views: {};
+    Functions: {};
+    Enums: {};
+    CompositeTypes: {};
+  };
+};
+
+let cachedClient: ReturnType<typeof createClient<Database>> | null = null;
 
 export function getSupabaseClient() {
   if (cachedClient) return cachedClient;
@@ -30,20 +67,10 @@ export function getSupabaseClient() {
     throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY env vars");
   }
 
-  cachedClient = createClient(url, key, {
+  cachedClient = createClient<Database>(url, key, {
     auth: { persistSession: false },
   });
   return cachedClient;
-}
-
-export interface PrepSheetRow {
-  id: string;
-  symbol: string;
-  trade_date: string;
-  generated_at: string;
-  levels: unknown;
-  analysis: unknown;
-  raw_claude_response: string | null;
 }
 
 export async function upsertPrepSheet(row: {
@@ -71,5 +98,5 @@ export async function upsertPrepSheet(row: {
     .single();
 
   if (error) throw error;
-  return data as PrepSheetRow;
+  return data;
 }
