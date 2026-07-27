@@ -180,13 +180,18 @@ export async function generatePrepSheet(
   return { output, raw };
 }
 
+// Claude echoes back low/high as cleaned-up decimals (e.g. 754.81) rather than the
+// exact float the bin math produced (e.g. 754.8100000000001), so boundary comparisons
+// need slack — real price levels never differ by anything close to this epsilon.
+const BOUNDARY_EPSILON = 1e-6;
+
 function computeRelativePosition(
   zoneLow: number,
   zoneHigh: number,
   val: number,
   vah: number
 ): RelativePosition {
-  if (zoneHigh <= val) return "below_value_area";
-  if (zoneLow >= vah) return "above_value_area";
+  if (zoneHigh <= val + BOUNDARY_EPSILON) return "below_value_area";
+  if (zoneLow >= vah - BOUNDARY_EPSILON) return "above_value_area";
   return "inside_value_area";
 }
