@@ -11,18 +11,26 @@ export interface PriceBin {
   volume: number;
 }
 
+export interface LvnZone {
+  low: number;
+  high: number;
+  price: number;
+}
+
 export interface VolumeProfileResult {
   bins: PriceBin[];
   poc: number;
   vah: number;
   val: number;
-  lvns: number[];
+  lvns: LvnZone[];
   totalVolume: number;
 }
 
 interface VolumeProfileOptions {
   valueAreaPct?: number;
   lvnThresholdPct?: number;
+  /** Bins below this fraction of POC volume are treated as undeveloped/empty tail, not real LVNs. */
+  developedFloorPct?: number;
 }
 
 export function buildVolumeProfile(
@@ -32,6 +40,7 @@ export function buildVolumeProfile(
 ): VolumeProfileResult {
   const valueAreaPct = options.valueAreaPct ?? 0.7;
   const lvnThresholdPct = options.lvnThresholdPct ?? 0.2;
+  const developedFloorPct = options.developedFloorPct ?? 0.05;
 
   if (bars.length === 0) {
     return { bins: [], poc: 0, vah: 0, val: 0, lvns: [], totalVolume: 0 };
@@ -95,16 +104,31 @@ export function buildVolumeProfile(
   const val = bins[loIdx]?.low ?? 0;
   const vah = bins[hiIdx]?.high ?? 0;
 
-  const lvns: number[] = [];
-  for (let i = 1; i < bins.length - 1; i++) {
-    const bin = bins[i];
-    const isLocalMin = bin.volume <= bins[i - 1].volume && bin.volume <= bins[i + 1].volume;
-    if (!isLocalMin || bin.volume === 0) continue;
+  const pocVolume = bins[pocIdx]?.volume ?? 0;
+  const developedFloor = pocVolume * developedFloorPct;
 
-    const referencePeak = Math.max(nearestPeak(bins, i, -1), nearestPeak(bins, i, 1));
-    if (referencePeak > 0 && bin.volume < referencePeak * lvnThresholdPct) {
-      lvns.push(bin.price);
+  let firstDeveloped = 0;
+  while (firstDeveloped < bins.length && bins[firstDeveloped].volume < developedFloor) firstDeveloped++;
+  let lastDeveloped = bins.length - 1;
+  while (lastDeveloped > firstDeveloped && bins[lastDeveloped].volume < developedFloor) lastDeveloped--;
+
+  // Only bins strictly inside the developed range can be LVNs — a thin run touching
+  // either edge is just the profile's natural taper, not a gap between two real nodes.
+  const lvnThreshold = pocVolume * lvnThresholdPct;
+  const lvns: LvnZone[] = [];
+  let runStart: number | null = null;
+
+  for (let i = firstDeveloped + 1; i < lastDeveloped; i++) {
+    const isThin = bins[i].volume < lvnThreshold;
+    if (isThin && runStart === null) {
+      runStart = i;
+    } else if (!isThin && runStart !== null) {
+      lvns.push(zoneFromRun(bins, runStart, i - 1));
+      runStart = null;
     }
+  }
+  if (runStart !== null) {
+    lvns.push(zoneFromRun(bins, runStart, lastDeveloped - 1));
   }
 
   return { bins, poc, vah, val, lvns, totalVolume };
@@ -114,17 +138,8 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-function nearestPeak(bins: PriceBin[], fromIdx: number, direction: 1 | -1): number {
-  let idx = fromIdx + direction;
-  let maxSoFar = 0;
-  while (idx >= 0 && idx < bins.length) {
-    const vol = bins[idx].volume;
-    if (vol >= maxSoFar) {
-      maxSoFar = vol;
-    } else {
-      break;
-    }
-    idx += direction;
-  }
-  return maxSoFar;
+function zoneFromRun(bins: PriceBin[], startIdx: number, endIdx: number): LvnZone {
+  const low = bins[startIdx].low;
+  const high = bins[endIdx].high;
+  return { low, high, price: (low + high) / 2 };
 }

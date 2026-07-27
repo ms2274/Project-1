@@ -19,7 +19,8 @@ const SYMBOLS = ["SPY", "QQQ"];
 function printProfile(label: string, vp: VolumeProfileResult, barCount: number) {
   console.log(`\n[${label}, ${barCount} bars]`);
   console.log(`  POC: ${vp.poc.toFixed(2)}  VAH: ${vp.vah.toFixed(2)}  VAL: ${vp.val.toFixed(2)}`);
-  console.log(`  LVNs (${vp.lvns.length}): ${vp.lvns.map((p) => p.toFixed(2)).join(", ") || "none"}`);
+  const zones = vp.lvns.map((z) => `${z.low.toFixed(2)}-${z.high.toFixed(2)}`).join(", ");
+  console.log(`  LVN zones (${vp.lvns.length}): ${zones || "none"}`);
 }
 
 async function main() {

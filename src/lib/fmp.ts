@@ -1,4 +1,4 @@
-const FMP_BASE_URL = "https://financialmodelingprep.com/api/v3";
+const FMP_BASE_URL = "https://financialmodelingprep.com/stable";
 
 function requireApiKey(): string {
   const key = process.env.FMP_API_KEY;
@@ -13,7 +13,7 @@ export interface VixQuote {
 
 export async function fetchVixQuote(): Promise<VixQuote> {
   const apiKey = requireApiKey();
-  const url = `${FMP_BASE_URL}/quote/%5EVIX?apikey=${apiKey}`;
+  const url = `${FMP_BASE_URL}/quote?symbol=${encodeURIComponent("^VIX")}&apikey=${apiKey}`;
 
   const res = await fetch(url);
   if (!res.ok) {

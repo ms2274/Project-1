@@ -94,7 +94,7 @@ export async function fetchAggregateBars(
 const LOOKBACK_DAYS = {
   "1m": 6,
   "30m": 16,
-  "4h": 120,
+  "4h": 30,
 } as const;
 
 export async function get1mBars(ticker: string): Promise<PolygonBar[]> {
