@@ -28,11 +28,11 @@ and must be presented only as "LVN zones" or "inflection zones" — not
 relabeled as supply/demand.
 
 For the lvnZones output, produce exactly one entry per LVN zone given in the
-input for each timeframe, preserving its low/high/timeframe values unchanged.
-Do not invent additional zones and do not use the value area (VAH/VAL) itself
-as a zone — the value area is a separate concept from an LVN. For each zone,
-classify its relativePosition as "above_value_area", "below_value_area", or
-"inside_value_area" relative to that same timeframe's VAH/VAL, and write a
+input for each timeframe, in the same order, preserving its low/high/timeframe
+values unchanged. Do not invent additional zones and do not use the value
+area (VAH/VAL) itself as a zone — the value area is a separate concept from
+an LVN. Where a zone sits relative to the value area is computed separately
+from your output, so do not classify or state that yourself — just write a
 one-sentence rationale referencing the nearby POC/VAH/VAL for context.
 Reference only price levels present in the input; never invent a level. If
 the weekly trend is "sideways", say so plainly instead of forcing a narrative

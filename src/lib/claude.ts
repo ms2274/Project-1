@@ -34,12 +34,29 @@ export interface PrepSheetInput {
   timeframes: PrepSheetTimeframeLevels[];
 }
 
+export type RelativePosition = "above_value_area" | "below_value_area" | "inside_value_area";
+
 export interface LvnInflectionZone {
   low: number;
   high: number;
   timeframe: string;
-  relativePosition: "above_value_area" | "below_value_area" | "inside_value_area";
+  relativePosition: RelativePosition;
   rationale: string;
+}
+
+interface LvnZoneDraft {
+  low: number;
+  high: number;
+  timeframe: string;
+  rationale: string;
+}
+
+interface PrepSheetAnalysisDraft {
+  trendSummary: string;
+  vixSummary: string;
+  lvnZones: LvnZoneDraft[];
+  narrative: string;
+  watchouts: string[];
 }
 
 export interface PrepSheetAnalysis {
@@ -73,20 +90,16 @@ const PREP_SHEET_TOOL: Anthropic.Tool = {
       lvnZones: {
         type: "array",
         description:
-          "One entry per LVN zone given in the input (same count, same low/high values, unchanged) — not supply/demand zones, and not the value area itself.",
+          "One entry per LVN zone given in the input (same count, same low/high values, unchanged, same order) — not supply/demand zones, and not the value area itself. Do not classify position relative to the value area yourself — that is computed separately from the numbers; just describe each zone.",
         items: {
           type: "object",
           properties: {
             low: { type: "number" },
             high: { type: "number" },
             timeframe: { type: "string" },
-            relativePosition: {
-              type: "string",
-              enum: ["above_value_area", "below_value_area", "inside_value_area"],
-            },
             rationale: { type: "string" },
           },
-          required: ["low", "high", "timeframe", "relativePosition", "rationale"],
+          required: ["low", "high", "timeframe", "rationale"],
         },
       },
       narrative: {
@@ -141,10 +154,39 @@ export async function generatePrepSheet(
     throw new Error(`No tool_use block in Claude response: ${raw.slice(0, 1000)}`);
   }
 
-  const analysis = toolUse.input as PrepSheetAnalysis;
+  const draft = toolUse.input as PrepSheetAnalysisDraft;
+  const valueAreaByTimeframe = new Map(input.timeframes.map((tf) => [tf.label, tf]));
 
-  return {
-    output: { symbol: input.symbol, date: input.date, ...analysis },
-    raw,
+  const lvnZones: LvnInflectionZone[] = draft.lvnZones.map((zone) => {
+    const tf = valueAreaByTimeframe.get(zone.timeframe);
+    return {
+      ...zone,
+      relativePosition: tf
+        ? computeRelativePosition(zone.low, zone.high, tf.val, tf.vah)
+        : "inside_value_area",
+    };
+  });
+
+  const output: PrepSheetOutput = {
+    symbol: input.symbol,
+    date: input.date,
+    trendSummary: draft.trendSummary,
+    vixSummary: draft.vixSummary,
+    lvnZones,
+    narrative: draft.narrative,
+    watchouts: draft.watchouts,
   };
+
+  return { output, raw };
+}
+
+function computeRelativePosition(
+  zoneLow: number,
+  zoneHigh: number,
+  val: number,
+  vah: number
+): RelativePosition {
+  if (zoneHigh <= val) return "below_value_area";
+  if (zoneLow >= vah) return "above_value_area";
+  return "inside_value_area";
 }
