@@ -44,9 +44,9 @@ concrete, referencing actual levels/dates from the data.
 - primaryBias: one sentence stating the dominant tilt (long/short/neutral),
   reconciling the 3-tier trend read with current price's position relative to
   the S/R ladder and zones.
-- scenarios: 2-3 items, each a short title (e.g. "Breakout continuation",
-  "Pullback-to-demand entry", "Supply rejection") and a description tying it
-  to specific levels from the data (an S/R level, a zone boundary, a session
+- scenarios: 2-3 strings, each a short label followed by a colon and a
+  description in one string (e.g. "Breakout continuation: ..."), tying it to
+  specific levels from the data (an S/R level, a zone boundary, a session
   level).
 - avoid: one paragraph on what not to do given today's specific conditions
   (e.g. chasing on low volume ahead of a holiday, holding size over a gap).

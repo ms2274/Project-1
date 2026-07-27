@@ -82,9 +82,7 @@ function PrepSheetCard({ sheet }: { sheet: PrepSheetOutput }) {
       <p className="mt-1 text-sm text-neutral-300">{sheet.gamePlan.primaryBias}</p>
       <ul className="mt-1 space-y-1 text-sm text-neutral-300">
         {sheet.gamePlan.scenarios.map((s, i) => (
-          <li key={i}>
-            <span className="font-medium">{s.title}:</span> {s.description}
-          </li>
+          <li key={i}>{s}</li>
         ))}
       </ul>
       <p className="mt-1 text-sm text-neutral-400">Avoid: {sheet.gamePlan.avoid}</p>

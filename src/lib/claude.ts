@@ -73,14 +73,9 @@ export interface PrepSheetInput {
   upcomingHolidays: HolidayInput[];
 }
 
-export interface GamePlanScenario {
-  title: string;
-  description: string;
-}
-
 export interface GamePlan {
   primaryBias: string;
-  scenarios: GamePlanScenario[];
+  scenarios: string[];
   avoid: string;
 }
 
@@ -174,12 +169,8 @@ const PREP_SHEET_TOOL: Anthropic.Tool = {
           scenarios: {
             type: "array",
             items: {
-              type: "object",
-              properties: {
-                title: { type: "string" },
-                description: { type: "string" },
-              },
-              required: ["title", "description"],
+              type: "string",
+              description: "A short label followed by a colon and the scenario description in one string, e.g. 'Breakout continuation: ...'",
             },
           },
           avoid: { type: "string" },
@@ -241,36 +232,82 @@ function computeRiskReward(play: OptionsPlayDraft): number | null {
 
 const MIN_RISK_REWARD = 3;
 const RISK_REWARD_EPSILON = 0.001;
+const MAX_ATTEMPTS = 3;
+
+// Claude's tool-use output is usually schema-valid, but a nested field can
+// occasionally come back malformed (seen once in testing: gamePlan came back
+// as a bare string containing leaked tool-call-tag text instead of the
+// object). Validate defensively and retry rather than silently shipping
+// broken data to a tool meant to run unattended every trading morning.
+function validateDraft(draft: unknown): draft is PrepSheetAnalysisDraft {
+  if (typeof draft !== "object" || draft === null) return false;
+  const d = draft as Record<string, unknown>;
+
+  if (typeof d.trendSummary !== "string" || typeof d.vixSummary !== "string") return false;
+  if (!Array.isArray(d.redFlags) || !d.redFlags.every((f) => typeof f === "string")) return false;
+
+  const gamePlan = d.gamePlan as Record<string, unknown> | undefined;
+  if (
+    typeof gamePlan !== "object" ||
+    gamePlan === null ||
+    typeof gamePlan.primaryBias !== "string" ||
+    typeof gamePlan.avoid !== "string" ||
+    !Array.isArray(gamePlan.scenarios) ||
+    !gamePlan.scenarios.every((s) => typeof s === "string")
+  ) {
+    return false;
+  }
+
+  if (!Array.isArray(d.supplyZones) || !Array.isArray(d.demandZones)) return false;
+  if (!Array.isArray(d.optionsPlays)) return false;
+
+  return true;
+}
 
 export async function generatePrepSheet(
   input: PrepSheetInput
 ): Promise<{ output: PrepSheetOutput; raw: string }> {
   const anthropic = getClient();
 
-  const message = await anthropic.messages.create({
-    model: MODEL,
-    max_tokens: 4000,
-    system: PREP_SHEET_SYSTEM_PROMPT,
-    tools: [PREP_SHEET_TOOL],
-    tool_choice: { type: "tool", name: "generate_prep_sheet" },
-    messages: [
-      {
-        role: "user",
-        content: JSON.stringify(input, null, 2),
-      },
-    ],
-  });
+  let draft: PrepSheetAnalysisDraft | null = null;
+  let raw = "";
+  let lastError: string | null = null;
 
-  const raw = JSON.stringify(message.content);
-  const toolUse = message.content.find(
-    (block): block is Anthropic.ToolUseBlock => block.type === "tool_use"
-  );
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS && draft === null; attempt++) {
+    const message = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: 4000,
+      system: PREP_SHEET_SYSTEM_PROMPT,
+      tools: [PREP_SHEET_TOOL],
+      tool_choice: { type: "tool", name: "generate_prep_sheet" },
+      messages: [
+        {
+          role: "user",
+          content: JSON.stringify(input, null, 2),
+        },
+      ],
+    });
 
-  if (!toolUse) {
-    throw new Error(`No tool_use block in Claude response: ${raw.slice(0, 1000)}`);
+    raw = JSON.stringify(message.content);
+    const toolUse = message.content.find(
+      (block): block is Anthropic.ToolUseBlock => block.type === "tool_use"
+    );
+
+    if (!toolUse) {
+      lastError = `No tool_use block in Claude response: ${raw.slice(0, 1000)}`;
+      continue;
+    }
+
+    if (validateDraft(toolUse.input)) {
+      draft = toolUse.input;
+    } else {
+      lastError = `Malformed tool_use input on attempt ${attempt}: ${JSON.stringify(toolUse.input).slice(0, 1000)}`;
+    }
   }
 
-  const draft = toolUse.input as PrepSheetAnalysisDraft;
+  if (draft === null) {
+    throw new Error(`Claude returned malformed output after ${MAX_ATTEMPTS} attempts. Last error: ${lastError}`);
+  }
 
   const optionsPlays: OptionsPlay[] = draft.optionsPlays
     .map((play) => {
