@@ -27,5 +27,5 @@ export async function fetchVixQuote(): Promise<VixQuote> {
     throw new Error(`Unexpected FMP response shape: ${JSON.stringify(json).slice(0, 500)}`);
   }
 
-  return { price: quote.price, changePercent: quote.changesPercentage ?? 0 };
+  return { price: quote.price, changePercent: quote.changePercentage ?? 0 };
 }

@@ -54,6 +54,8 @@ async function main() {
       const trend = classifyWeeklyTrend(weekly);
       console.log(`\nWeekly Dow Theory trend: ${trend.trend}`);
       console.log(`  ${trend.rationale}`);
+      console.log(`  Last 5 swing highs: ${trend.swingHighs.slice(-5).map((h) => h.price.toFixed(2)).join(", ")}`);
+      console.log(`  Last 5 swing lows:  ${trend.swingLows.slice(-5).map((l) => l.price.toFixed(2)).join(", ")}`);
     } catch (err) {
       console.error(`Failed for ${symbol}:`, err);
     }

@@ -49,11 +49,12 @@ function fmt(points: SwingPoint[]): string {
 }
 
 export function classifyWeeklyTrend(
-  weeklyBars: { t: number; h: number; l: number }[]
+  weeklyBars: { t: number; h: number; l: number }[],
+  confirmationSwings = 2
 ): DowTheoryResult {
   const { highs, lows } = findSwingPoints(weeklyBars, 2);
-  const recentHighs = highs.slice(-4);
-  const recentLows = lows.slice(-4);
+  const recentHighs = highs.slice(-confirmationSwings);
+  const recentLows = lows.slice(-confirmationSwings);
 
   const higherHighs = isMonotonic(
     recentHighs.map((h) => h.price),
