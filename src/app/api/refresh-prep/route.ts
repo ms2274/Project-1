@@ -25,7 +25,7 @@ export async function POST() {
           raw_claude_response: raw,
         });
 
-        return output;
+        return { input, output };
       })
     );
 
