@@ -9,7 +9,7 @@ export interface PolygonBar {
   v: number;
 }
 
-type BarTimespan = "minute" | "hour" | "day" | "week";
+type BarTimespan = "minute" | "hour" | "day" | "week" | "month";
 
 function requireApiKey(): string {
   const key = process.env.POLYGON_API_KEY;
@@ -125,6 +125,39 @@ export async function getDailyBars(ticker: string, days = 90): Promise<PolygonBa
   const to = new Date();
   const from = new Date(to.getTime() - days * 86_400_000);
   return fetchAggregateBars(ticker, 1, "day", from, to);
+}
+
+export async function getMonthlyBars(ticker: string, years = 8): Promise<PolygonBar[]> {
+  const to = new Date();
+  const from = new Date(to.getTime() - years * 365 * 86_400_000);
+  return fetchAggregateBars(ticker, 1, "month", from, to);
+}
+
+export interface SessionLevels {
+  date: string;
+  open: number;
+  hod: number;
+  lod: number;
+  close: number;
+}
+
+export function computeSessionLevels(bars: PolygonBar[], date: string): SessionLevels | null {
+  const sessionBars = bars.filter((b) => easternDateString(b.t) === date);
+  if (sessionBars.length === 0) return null;
+
+  return {
+    date,
+    open: sessionBars[0].o,
+    hod: Math.max(...sessionBars.map((b) => b.h)),
+    lod: Math.min(...sessionBars.map((b) => b.l)),
+    close: sessionBars[sessionBars.length - 1].c,
+  };
+}
+
+export function getRecentSessionDates(bars: PolygonBar[], count: number): string[] {
+  const dates = Array.from(new Set(bars.map((b) => easternDateString(b.t))));
+  dates.sort();
+  return dates.slice(-count);
 }
 
 export interface MarketHoliday {

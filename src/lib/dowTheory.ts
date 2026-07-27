@@ -88,6 +88,16 @@ export function classifyTrend(
   return { trend, swingHighs: highs, swingLows: lows, rationale };
 }
 
+// Three-tier Dow Theory hierarchy: Primary = monthly bars (multi-year trend),
+// Secondary = weekly bars (corrective/intermediate swings), Minor = daily bars
+// (short-term bounce/pullback within the secondary move).
+export function classifyMonthlyTrend(
+  monthlyBars: { t: number; h: number; l: number }[],
+  confirmationSwings = 2
+): DowTheoryResult {
+  return classifyTrend(monthlyBars, 2, confirmationSwings);
+}
+
 export function classifyWeeklyTrend(
   weeklyBars: { t: number; h: number; l: number }[],
   confirmationSwings = 2
@@ -97,9 +107,7 @@ export function classifyWeeklyTrend(
 
 export function classifyDailyTrend(
   dailyBars: { t: number; h: number; l: number }[],
-  lookbackDays: number,
   confirmationSwings = 2
 ): DowTheoryResult {
-  const window = dailyBars.slice(-lookbackDays);
-  return classifyTrend(window, 2, confirmationSwings);
+  return classifyTrend(dailyBars, 2, confirmationSwings);
 }

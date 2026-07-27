@@ -7,12 +7,20 @@ import {
   get4hBars,
   getWeeklyBars,
   getDailyBars,
+  getMonthlyBars,
   getUpcomingMarketHolidays,
+  computeSessionLevels,
+  getRecentSessionDates,
   mostRecentSessionBars,
   filterRegularSession,
 } from "../src/lib/polygon";
 import { buildVolumeProfile, LVN_BIN_SIZE, VolumeProfileResult } from "../src/lib/volumeProfile";
-import { classifyWeeklyTrend, classifyDailyTrend, DowTheoryResult } from "../src/lib/dowTheory";
+import {
+  classifyMonthlyTrend,
+  classifyWeeklyTrend,
+  classifyDailyTrend,
+  DowTheoryResult,
+} from "../src/lib/dowTheory";
 import { buildSrLadder } from "../src/lib/srLadder";
 import { fetchVixQuote } from "../src/lib/fmp";
 import { classifyVix } from "../src/lib/vix";
@@ -54,16 +62,18 @@ async function main() {
   for (const symbol of SYMBOLS) {
     console.log(`\n=== ${symbol} ===`);
     try {
-      const [oneMin, thirtyMin, fourHour, weekly, daily] = await Promise.all([
+      const [oneMin, thirtyMin, fourHour, weekly, daily, monthly] = await Promise.all([
         get1mBars(symbol),
         get30mBars(symbol),
         get4hBars(symbol),
         getWeeklyBars(symbol),
         getDailyBars(symbol),
+        getMonthlyBars(symbol),
       ]);
 
       console.log(
-        `Raw bars fetched — 1m: ${oneMin.length}, 30m: ${thirtyMin.length}, 4h: ${fourHour.length}, weekly: ${weekly.length}, daily: ${daily.length}`
+        `Raw bars fetched — 1m: ${oneMin.length}, 30m: ${thirtyMin.length}, 4h: ${fourHour.length}, ` +
+          `weekly: ${weekly.length}, daily: ${daily.length}, monthly: ${monthly.length}`
       );
 
       const lastSession1m = filterRegularSession(mostRecentSessionBars(oneMin));
@@ -73,21 +83,32 @@ async function main() {
       printProfile("30m / recent sessions", buildVolumeProfile(regular30m, LVN_BIN_SIZE["30m"]), regular30m.length);
       printProfile("4h / longer lookback", buildVolumeProfile(fourHour, LVN_BIN_SIZE["4h"]), fourHour.length);
 
-      const primaryTrend = classifyWeeklyTrend(weekly);
-      printTrend("Primary (weekly)", primaryTrend);
+      const primaryTrend = classifyMonthlyTrend(monthly);
+      printTrend("Primary (monthly)", primaryTrend);
 
-      const secondaryTrend = classifyDailyTrend(daily, 50);
-      printTrend("Secondary (daily, ~50d)", secondaryTrend);
+      const secondaryTrend = classifyWeeklyTrend(weekly);
+      printTrend("Secondary (weekly)", secondaryTrend);
 
-      const minorTrend = classifyDailyTrend(daily, 12);
-      printTrend("Minor (daily, ~12d)", minorTrend);
+      const minorTrend = classifyDailyTrend(daily);
+      printTrend("Minor (daily)", minorTrend);
 
       if (daily.length > 0) {
         const currentPrice = daily[daily.length - 1].c;
-        const ladder = buildSrLadder(currentPrice, secondaryTrend.swingHighs, secondaryTrend.swingLows);
+        const ladder = buildSrLadder(currentPrice, minorTrend.swingHighs, minorTrend.swingLows);
         console.log(`\nS/R ladder (current price ${currentPrice.toFixed(2)}):`);
         console.log(`  Resistance: ${ladder.resistance.map((r) => `${r.label}=${r.price.toFixed(2)}`).join(", ") || "none"}`);
         console.log(`  Support:    ${ladder.support.map((s) => `${s.label}=${s.price.toFixed(2)}`).join(", ") || "none"}`);
+
+        const sessionDates = getRecentSessionDates(oneMin, 2);
+        console.log("\nSession levels:");
+        for (const date of sessionDates) {
+          const levels = computeSessionLevels(oneMin, date);
+          if (levels) {
+            console.log(
+              `  ${date}: open=${levels.open.toFixed(2)} hod=${levels.hod.toFixed(2)} lod=${levels.lod.toFixed(2)} close=${levels.close.toFixed(2)}`
+            );
+          }
+        }
       }
     } catch (err) {
       console.error(`Failed for ${symbol}:`, err);
