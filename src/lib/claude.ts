@@ -232,7 +232,7 @@ function computeRiskReward(play: OptionsPlayDraft): number | null {
 
 const MIN_RISK_REWARD = 3;
 const RISK_REWARD_EPSILON = 0.001;
-const MAX_ATTEMPTS = 3;
+const MAX_ATTEMPTS = 5;
 
 // Claude's tool-use output is usually schema-valid, but a nested field can
 // occasionally come back malformed (seen once in testing: gamePlan came back
