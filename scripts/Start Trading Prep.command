@@ -1,17 +1,35 @@
 #!/bin/bash
 # Double-click this file to update, start, and open the Trading Prep dashboard.
-set -e
 
 PROJECT_DIR="$HOME/Project-1"
-cd "$PROJECT_DIR"
+cd "$PROJECT_DIR" || { echo "ERROR: could not find $PROJECT_DIR"; read -p "Press Enter to close..."; exit 1; }
 
+echo "=================================================="
 echo "Checking for updates..."
-git fetch origin claude/nextjs-trading-prep-build-2j3pfe
-git checkout claude/nextjs-trading-prep-build-2j3pfe
-git merge --ff-only origin/claude/nextjs-trading-prep-build-2j3pfe || {
-  echo "Could not fast-forward to the latest version (you may have local edits)."
-  echo "Continuing with whatever code is currently on disk."
-}
+echo "=================================================="
+
+BRANCH="claude/nextjs-trading-prep-build-2j3pfe"
+UPDATE_OK=true
+
+git fetch origin "$BRANCH" || UPDATE_OK=false
+git checkout "$BRANCH" || UPDATE_OK=false
+if [ "$UPDATE_OK" = true ]; then
+  git merge --ff-only "origin/$BRANCH" || UPDATE_OK=false
+fi
+
+if [ "$UPDATE_OK" = false ]; then
+  echo ""
+  echo "############################################################"
+  echo "# UPDATE FAILED - you are running OLD code, not the latest #"
+  echo "# Tell Claude this happened and paste everything above.    #"
+  echo "############################################################"
+  echo ""
+else
+  echo "Up to date."
+fi
+
+echo "Current version: $(git log -1 --format='%h %ci %s')"
+echo ""
 
 echo "Installing dependencies..."
 npm install
@@ -28,8 +46,19 @@ npm run dev &
 DEV_PID=$!
 
 echo "Waiting for the dev server to start..."
+COUNT=0
 until curl -sf http://localhost:3000 > /dev/null 2>&1; do
   sleep 1
+  COUNT=$((COUNT + 1))
+  if [ "$COUNT" -gt 60 ]; then
+    echo ""
+    echo "############################################################"
+    echo "# SERVER NEVER STARTED after 60 seconds.                   #"
+    echo "# Tell Claude this happened and paste everything above.    #"
+    echo "############################################################"
+    read -p "Press Enter to close..."
+    exit 1
+  fi
 done
 
 open http://localhost:3000
