@@ -2,36 +2,43 @@ import { NextResponse } from "next/server";
 import { fetchVixQuote } from "@/lib/fmp";
 import { getUpcomingMarketHolidays } from "@/lib/polygon";
 import { buildPrepSheetInput } from "@/lib/buildPrepSheetInput";
-import { generatePrepSheet } from "@/lib/claude";
+import { generatePrepSheet, PrepSheetInput, PrepSheetOutput } from "@/lib/claude";
 import { upsertPrepSheet } from "@/lib/supabase";
 
 const SYMBOLS = ["SPY", "QQQ"];
 
 export async function POST() {
-  try {
-    const vix = await fetchVixQuote().catch(() => null);
-    const holidays = await getUpcomingMarketHolidays().catch(() => []);
+  const vix = await fetchVixQuote().catch(() => null);
+  const holidays = await getUpcomingMarketHolidays().catch(() => []);
 
-    const results = await Promise.all(
-      SYMBOLS.map(async (symbol) => {
-        const input = await buildPrepSheetInput(symbol, vix, holidays);
-        const { output, raw } = await generatePrepSheet(input);
+  const settled = await Promise.allSettled(
+    SYMBOLS.map(async (symbol) => {
+      const input = await buildPrepSheetInput(symbol, vix, holidays);
+      const { output, raw } = await generatePrepSheet(input);
 
-        await upsertPrepSheet({
-          symbol,
-          trade_date: input.date,
-          levels: input,
-          analysis: output,
-          raw_claude_response: raw,
-        });
+      await upsertPrepSheet({
+        symbol,
+        trade_date: input.date,
+        levels: input,
+        analysis: output,
+        raw_claude_response: raw,
+      });
 
-        return { input, output };
-      })
-    );
+      return { input, output };
+    })
+  );
 
-    return NextResponse.json({ sheets: results });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  const sheets: { input: PrepSheetInput; output: PrepSheetOutput }[] = [];
+  const errors: { symbol: string; error: string }[] = [];
+
+  settled.forEach((result, i) => {
+    if (result.status === "fulfilled") {
+      sheets.push(result.value);
+    } else {
+      const message = result.reason instanceof Error ? result.reason.message : String(result.reason);
+      errors.push({ symbol: SYMBOLS[i], error: message });
+    }
+  });
+
+  return NextResponse.json({ sheets, errors });
 }

@@ -9,8 +9,14 @@ interface Sheet {
   output: PrepSheetOutput;
 }
 
+interface SymbolError {
+  symbol: string;
+  error: string;
+}
+
 export default function Home() {
   const [sheets, setSheets] = useState<Sheet[] | null>(null);
+  const [symbolErrors, setSymbolErrors] = useState<SymbolError[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +28,7 @@ export default function Home() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? `Request failed (${res.status})`);
       setSheets(json.sheets);
+      setSymbolErrors(json.errors ?? []);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -55,7 +62,13 @@ export default function Home() {
         <p className="mt-4 rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300">{error}</p>
       )}
 
-      {sheets && (
+      {symbolErrors.map((e) => (
+        <p key={e.symbol} className="mt-4 rounded border border-red-800 bg-red-950 p-3 text-sm text-red-300">
+          {e.symbol} failed to generate: {e.error}
+        </p>
+      ))}
+
+      {sheets && sheets.length > 0 && (
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           {sheets.map((sheet) => (
             <PrepSheetCard key={sheet.output.symbol} sheet={sheet} />

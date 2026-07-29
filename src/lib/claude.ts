@@ -277,6 +277,7 @@ export async function generatePrepSheet(
     const message = await anthropic.messages.create({
       model: MODEL,
       max_tokens: 4000,
+      temperature: 0,
       system: PREP_SHEET_SYSTEM_PROMPT,
       tools: [PREP_SHEET_TOOL],
       tool_choice: { type: "tool", name: "generate_prep_sheet" },
