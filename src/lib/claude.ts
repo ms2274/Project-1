@@ -107,16 +107,6 @@ export interface OptionsPlay extends OptionsPlayDraft {
   riskRewardRatio: number;
 }
 
-interface PrepSheetAnalysisDraft {
-  trendSummary: string;
-  vixSummary: string;
-  redFlags: string[];
-  gamePlan: GamePlan;
-  supplyZones: SupplyDemandZoneDetail[];
-  demandZones: SupplyDemandZoneDetail[];
-  optionsPlays: OptionsPlayDraft[];
-}
-
 export interface PrepSheetAnalysis {
   trendSummary: string;
   vixSummary: string;
@@ -132,6 +122,26 @@ export interface PrepSheetOutput extends PrepSheetAnalysis {
   date: string;
 }
 
+// The full 7-field schema (trendSummary/vixSummary/redFlags/gamePlan/
+// supplyZones/demandZones/optionsPlays) in one tool call proved unreliable
+// live: two separate runs came back with a field (gamePlan, then redFlags)
+// replaced by a bare string containing leaked tag-like text instead of
+// proper JSON, even with 5 retries. A small isolated schema never reproduced
+// this, so the split below trades one big call for two smaller ones.
+
+interface AnalysisDraft {
+  trendSummary: string;
+  vixSummary: string;
+  redFlags: string[];
+  supplyZones: SupplyDemandZoneDetail[];
+  demandZones: SupplyDemandZoneDetail[];
+}
+
+interface PlanDraft {
+  gamePlan: GamePlan;
+  optionsPlays: OptionsPlayDraft[];
+}
+
 const ZONE_ITEM_SCHEMA = {
   type: "object",
   properties: {
@@ -143,9 +153,9 @@ const ZONE_ITEM_SCHEMA = {
   required: ["low", "high", "strength", "rationale"],
 };
 
-const PREP_SHEET_TOOL: Anthropic.Tool = {
-  name: "generate_prep_sheet",
-  description: "Record a structured morning prep sheet: trend read, red flags, game plan, graded supply/demand zones, and options play ideas.",
+const ANALYSIS_TOOL: Anthropic.Tool = {
+  name: "generate_analysis",
+  description: "Record the trend read, VIX summary, red flags, and graded supply/demand zones for today's prep sheet.",
   input_schema: {
     type: "object",
     properties: {
@@ -162,6 +172,19 @@ const PREP_SHEET_TOOL: Anthropic.Tool = {
         items: { type: "string" },
         description: "Session-specific caveats (holiday/early-close within ~1 week, data gaps, VIX unavailable, choppy sandwiched price action, stalling trend tier).",
       },
+      supplyZones: { type: "array", items: ZONE_ITEM_SCHEMA },
+      demandZones: { type: "array", items: ZONE_ITEM_SCHEMA },
+    },
+    required: ["trendSummary", "vixSummary", "redFlags", "supplyZones", "demandZones"],
+  },
+};
+
+const PLAN_TOOL: Anthropic.Tool = {
+  name: "generate_plan",
+  description: "Record the game plan and options play ideas for today's prep sheet, grounded in the trend/zones already identified (see identifiedZones in the input).",
+  input_schema: {
+    type: "object",
+    properties: {
       gamePlan: {
         type: "object",
         properties: {
@@ -177,8 +200,6 @@ const PREP_SHEET_TOOL: Anthropic.Tool = {
         },
         required: ["primaryBias", "scenarios", "avoid"],
       },
-      supplyZones: { type: "array", items: ZONE_ITEM_SCHEMA },
-      demandZones: { type: "array", items: ZONE_ITEM_SCHEMA },
       optionsPlays: {
         type: "array",
         items: {
@@ -208,7 +229,7 @@ const PREP_SHEET_TOOL: Anthropic.Tool = {
         },
       },
     },
-    required: ["trendSummary", "vixSummary", "redFlags", "gamePlan", "supplyZones", "demandZones", "optionsPlays"],
+    required: ["gamePlan", "optionsPlays"],
   },
 };
 
@@ -234,17 +255,35 @@ const MIN_RISK_REWARD = 3;
 const RISK_REWARD_EPSILON = 0.001;
 const MAX_ATTEMPTS = 5;
 
-// Claude's tool-use output is usually schema-valid, but a nested field can
-// occasionally come back malformed (seen once in testing: gamePlan came back
-// as a bare string containing leaked tool-call-tag text instead of the
-// object). Validate defensively and retry rather than silently shipping
-// broken data to a tool meant to run unattended every trading morning.
-function validateDraft(draft: unknown): draft is PrepSheetAnalysisDraft {
+function isZoneArray(value: unknown): value is SupplyDemandZoneDetail[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (z) =>
+        typeof z === "object" &&
+        z !== null &&
+        typeof (z as Record<string, unknown>).low === "number" &&
+        typeof (z as Record<string, unknown>).high === "number" &&
+        typeof (z as Record<string, unknown>).strength === "string" &&
+        typeof (z as Record<string, unknown>).rationale === "string"
+    )
+  );
+}
+
+function validateAnalysisDraft(draft: unknown): draft is AnalysisDraft {
   if (typeof draft !== "object" || draft === null) return false;
   const d = draft as Record<string, unknown>;
 
   if (typeof d.trendSummary !== "string" || typeof d.vixSummary !== "string") return false;
   if (!Array.isArray(d.redFlags) || !d.redFlags.every((f) => typeof f === "string")) return false;
+  if (!isZoneArray(d.supplyZones) || !isZoneArray(d.demandZones)) return false;
+
+  return true;
+}
+
+function validatePlanDraft(draft: unknown): draft is PlanDraft {
+  if (typeof draft !== "object" || draft === null) return false;
+  const d = draft as Record<string, unknown>;
 
   const gamePlan = d.gamePlan as Record<string, unknown> | undefined;
   if (
@@ -258,18 +297,18 @@ function validateDraft(draft: unknown): draft is PrepSheetAnalysisDraft {
     return false;
   }
 
-  if (!Array.isArray(d.supplyZones) || !Array.isArray(d.demandZones)) return false;
   if (!Array.isArray(d.optionsPlays)) return false;
 
   return true;
 }
 
-export async function generatePrepSheet(
-  input: PrepSheetInput
-): Promise<{ output: PrepSheetOutput; raw: string }> {
-  const anthropic = getClient();
-
-  let draft: PrepSheetAnalysisDraft | null = null;
+async function callToolWithRetry<T>(
+  anthropic: Anthropic,
+  userContent: string,
+  tool: Anthropic.Tool,
+  validate: (input: unknown) => input is T
+): Promise<{ draft: T; raw: string }> {
+  let draft: T | null = null;
   let raw = "";
   let lastError: string | null = null;
 
@@ -278,14 +317,9 @@ export async function generatePrepSheet(
       model: MODEL,
       max_tokens: 4000,
       system: PREP_SHEET_SYSTEM_PROMPT,
-      tools: [PREP_SHEET_TOOL],
-      tool_choice: { type: "tool", name: "generate_prep_sheet" },
-      messages: [
-        {
-          role: "user",
-          content: JSON.stringify(input, null, 2),
-        },
-      ],
+      tools: [tool],
+      tool_choice: { type: "tool", name: tool.name },
+      messages: [{ role: "user", content: userContent }],
     });
 
     raw = JSON.stringify(message.content);
@@ -298,7 +332,7 @@ export async function generatePrepSheet(
       continue;
     }
 
-    if (validateDraft(toolUse.input)) {
+    if (validate(toolUse.input)) {
       draft = toolUse.input;
     } else {
       lastError = `Malformed tool_use input on attempt ${attempt}: ${JSON.stringify(toolUse.input).slice(0, 1000)}`;
@@ -306,10 +340,42 @@ export async function generatePrepSheet(
   }
 
   if (draft === null) {
-    throw new Error(`Claude returned malformed output after ${MAX_ATTEMPTS} attempts. Last error: ${lastError}`);
+    throw new Error(`Claude returned malformed output for ${tool.name} after ${MAX_ATTEMPTS} attempts. Last error: ${lastError}`);
   }
 
-  const optionsPlays: OptionsPlay[] = draft.optionsPlays
+  return { draft, raw };
+}
+
+export async function generatePrepSheet(
+  input: PrepSheetInput
+): Promise<{ output: PrepSheetOutput; raw: string }> {
+  const anthropic = getClient();
+
+  const { draft: analysis, raw: rawAnalysis } = await callToolWithRetry(
+    anthropic,
+    JSON.stringify(input, null, 2),
+    ANALYSIS_TOOL,
+    validateAnalysisDraft
+  );
+
+  const planInputContent = JSON.stringify(
+    {
+      ...input,
+      trendSummary: analysis.trendSummary,
+      identifiedZones: { supplyZones: analysis.supplyZones, demandZones: analysis.demandZones },
+    },
+    null,
+    2
+  );
+
+  const { draft: plan, raw: rawPlan } = await callToolWithRetry(
+    anthropic,
+    planInputContent,
+    PLAN_TOOL,
+    validatePlanDraft
+  );
+
+  const optionsPlays: OptionsPlay[] = plan.optionsPlays
     .map((play) => {
       const riskRewardRatio = computeRiskReward(play);
       return riskRewardRatio !== null ? { ...play, riskRewardRatio } : null;
@@ -319,14 +385,14 @@ export async function generatePrepSheet(
   const output: PrepSheetOutput = {
     symbol: input.symbol,
     date: input.date,
-    trendSummary: draft.trendSummary,
-    vixSummary: draft.vixSummary,
-    redFlags: draft.redFlags,
-    gamePlan: draft.gamePlan,
-    supplyZones: draft.supplyZones,
-    demandZones: draft.demandZones,
+    trendSummary: analysis.trendSummary,
+    vixSummary: analysis.vixSummary,
+    redFlags: analysis.redFlags,
+    gamePlan: plan.gamePlan,
+    supplyZones: analysis.supplyZones,
+    demandZones: analysis.demandZones,
     optionsPlays,
   };
 
-  return { output, raw };
+  return { output, raw: JSON.stringify({ analysis: rawAnalysis, plan: rawPlan }) };
 }

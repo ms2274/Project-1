@@ -64,9 +64,12 @@ from the provided bars. Only use zones you can actually point to in the given
 daily bars — do not fabricate one.
 
 ## optionsPlays
-Propose 2-4 candidate plays. Each must be grounded in an actual level from the
-data (a supply/demand zone, an S/R ladder level, POC/VAH/VAL, or a session
-level) for its entry trigger and target — never an arbitrary price. Place the
+This step happens after supplyZones/demandZones have already been identified
+— they are provided back to you as \`identifiedZones\` in the input; use them
+as-is rather than re-deriving them. Propose 2-4 candidate plays. Each must be
+grounded in an actual level from the data (a supply/demand zone, an S/R
+ladder level, POC/VAH/VAL, or a session level) for its entry trigger and
+target — never an arbitrary price. Place the
 stop just beyond the zone/level being used (a small buffer, not an arbitrary
 distance). For each play:
 - title: short descriptive name
