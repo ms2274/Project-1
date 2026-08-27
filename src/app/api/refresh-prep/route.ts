@@ -16,13 +16,21 @@ export async function POST() {
       const input = await buildPrepSheetInput(symbol, vix, holidays);
       const { output, raw } = await generatePrepSheet(input);
 
-      await upsertPrepSheet({
-        symbol,
-        trade_date: input.date,
-        levels: input,
-        analysis: output,
-        raw_claude_response: raw,
-      });
+      // Storage is a nice-to-have (history), not a reason to hide a
+      // successfully generated sheet from the user — never let a Supabase
+      // problem (wrong project, schema drift, network hiccup) masquerade
+      // as a generation failure.
+      try {
+        await upsertPrepSheet({
+          symbol,
+          trade_date: input.date,
+          levels: input,
+          analysis: output,
+          raw_claude_response: raw,
+        });
+      } catch (err) {
+        console.error(`Failed to save ${symbol} prep sheet to Supabase:`, err);
+      }
 
       return { input, output };
     })
